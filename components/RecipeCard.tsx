@@ -1,8 +1,5 @@
 import { Recipe } from "@/types/recipeType";
 import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
 
 const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
   const cardVariants = {
@@ -19,6 +16,8 @@ const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
   };
   return (
     <motion.a
+      initial="hidden"
+      animate="visible"
       href={`/recipes/${recipe._id}`}
       className="group cursor-pointer"
       variants={cardVariants}

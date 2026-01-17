@@ -5,8 +5,8 @@ import { ApiResponse } from "@/types/apiResponse";
 const recipeService = {
   getAllRecipes: async (
     options: {
-      page?: number;
-      limit?: number;
+      page?: number | string;
+      limit?: number | string;
       search?: string;
       sort?: string;
       home?: boolean;
