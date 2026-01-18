@@ -10,10 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import RecipeCard from "@/components/RecipeCard";
-import { useRecipeList } from "@/features/recipe-blog/hooks/useRecipeList";
 import Pagination from "@/components/Pagination";
+import recipeService from "@/services/recipeService";
+import { useItemList } from "@/features/recipe-blog/hooks/useItemList";
 
 export default function RecipesPage() {
+  const { getAllRecipes } = recipeService
   const {
     data,
     isLoading,
@@ -22,7 +24,7 @@ export default function RecipesPage() {
     handleSort,
     sort,
     handleUrlChange,
-  } = useRecipeList('recipes');
+  } = useItemList('recipes', getAllRecipes);
   const recipes = data?.data || [];
   const meta = data?.meta;
   const links = data?.links;

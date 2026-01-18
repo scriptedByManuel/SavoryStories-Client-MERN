@@ -1,3 +1,5 @@
+'use client';
+
 import { Recipe } from "@/types/recipeType";
 import { motion } from "framer-motion";
 
@@ -18,7 +20,7 @@ const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
     <motion.a
       initial="hidden"
       animate="visible"
-      href={`/recipes/${recipe._id}`}
+      href={`/recipes/${recipe.slug}`}
       className="group cursor-pointer"
       variants={cardVariants}
       whileHover={{ y: -5 }}
@@ -35,14 +37,14 @@ const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
-        <div className="p-6">
+        <div className="p-6 flex flex-col h-full">
           <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {recipe.title}
           </h3>
           <p className="text-muted-foreground mb-4 line-clamp-2 text-sm">
             {recipe.description}
           </p>
-          <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
+          <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4 mt-auto">
             <span>{recipe.cookingTime} mins</span>
             <span className="text-primary font-medium">
               {recipe.difficulty}

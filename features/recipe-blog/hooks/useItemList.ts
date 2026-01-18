@@ -2,10 +2,8 @@ import { debounce } from "lodash";
 import { useCallback, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useSWR from "swr";
-import recipeService from "@/services/recipeService";
 
-export const useRecipeList = (route: string) => {
-  const { getAllRecipes } = recipeService;
+export const useItemList = (route: string, service) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -18,7 +16,7 @@ export const useRecipeList = (route: string) => {
 
   const { data, error, isLoading } = useSWR(
     [`/${route}`, page, search, sort, limit],
-    () => getAllRecipes({ page: Number(page), search, sort, limit })
+    () => service({ page: Number(page), search, sort, limit })
   );
 
   const updateUrl = useCallback(
