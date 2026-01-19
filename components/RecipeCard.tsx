@@ -1,5 +1,3 @@
-'use client';
-
 import { Recipe } from "@/types/recipeType";
 import { motion } from "framer-motion";
 

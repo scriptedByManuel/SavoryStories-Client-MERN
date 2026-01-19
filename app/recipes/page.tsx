@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import { Input } from "@/components/ui/input";
 import { Search, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
@@ -13,6 +12,7 @@ import RecipeCard from "@/components/RecipeCard";
 import Pagination from "@/components/Pagination";
 import recipeService from "@/services/recipeService";
 import { useItemList } from "@/features/recipe-blog/hooks/useItemList";
+import { Recipe } from "@/types/recipeType";
 
 export default function RecipesPage() {
   const { getAllRecipes } = recipeService
@@ -122,7 +122,7 @@ export default function RecipesPage() {
             animate="visible"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {recipes.map((recipe) => (
+              {recipes.map((recipe: Recipe) => (
                 <RecipeCard key={recipe._id} recipe={recipe} />
               ))}
             </div>

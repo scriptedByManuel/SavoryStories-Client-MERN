@@ -3,14 +3,12 @@
 import React from "react"; 
 import { use } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useSlug } from "@/features/recipe-blog/hooks/useSlug";
 import recipeService from "@/services/recipeService";
 import { ArrowLeft, ChefHat, Clock, Utensils } from "lucide-react";
 import Link from "next/link";
-import { RecipeDetailSkeleton } from "@/components/RecipeDetailSkeleton";
-import { RecipeNotFound } from "@/components/RecipeNotFound";
-import { Recipe } from "@/types/recipeType";
+import { RecipeDetailSkeleton } from "@/features/recipe-blog/components/RecipeDetailSkeleton";
+import { RecipeNotFound } from "@/features/recipe-blog/components/BlogNotFound";
+import useSlug from "@/features/recipe-blog/hooks/useSlug";
 
 const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
   

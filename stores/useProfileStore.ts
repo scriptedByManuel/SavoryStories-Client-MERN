@@ -1,20 +1,22 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface Chef {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  bio?: string
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  bio?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface ProfileState {
-  chef: Chef | null
+  chef: Chef | null;
 
-  setChef: (chef: Chef) => void
-  updateChef: (data: Partial<Chef>) => void
-  logout: () => void
+  setChef: (chef: Chef) => void;
+  updateChef: (data: Partial<Chef>) => void;
+  logout: () => void;
 }
 
 export const useProfileStore = create<ProfileState>()(
@@ -23,27 +25,27 @@ export const useProfileStore = create<ProfileState>()(
       chef: null,
 
       setChef: (chef) => {
-        set({ chef })
+        set({ chef });
       },
 
       updateChef: (data) => {
-        const currentChef = get().chef
-        if (!currentChef) return
+        const currentChef = get().chef;
+        if (!currentChef) return;
 
         set({
           chef: {
             ...currentChef,
             ...data,
           },
-        })
+        });
       },
 
       logout: () => {
-        set({ chef: null })
+        set({ chef: null });
       },
     }),
     {
-      name: "chef_profile", 
-    }
-  )
-)
+      name: "chef_profile",
+    },
+  ),
+);

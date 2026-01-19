@@ -1,5 +1,5 @@
+"use client";
 import { motion } from "framer-motion";
-import React from "react";
 import { Calendar, User } from "lucide-react";
 import { Blog } from "@/types/blogType";
 import { formatDate } from "@/lib/formatDate";
@@ -18,7 +18,13 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
     },
   };
   return (
-    <motion.a href="" variants={cardVariants} whileHover={{ y: -5 }}>
+    <motion.a
+      initial="hidden"
+      animate="visible"
+      href={`/blog/${blog.slug}`}
+      variants={cardVariants}
+      whileHover={{ y: -5 }}
+    >
       <div
         className="bg-card rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group h-full"
         onClick={() => (window.location.href = `/blog/${blog.slug}`)}

@@ -2,15 +2,29 @@
 import { useDarkModeStore } from "@/stores/useDarkModeStore";
 import { ChefHat, LayoutDashboard, LogOut, Moon, Sun, User } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 import { Button } from "./ui/button";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import authService from "@/services/authService";
+import { useEffect, useState } from "react";
 
 const Header = () => {
-  const { chef, logout } = useProfileStore();
+  const [mounted, setMounted]=  useState(false)
+  const { chef, logout: clearUser } = useProfileStore();
+  const { logout } = authService;
   const { isDark, toggleDarkMode } = useDarkModeStore();
+
+  const handleLogout = async () => {
+    await logout()
+    clearUser()
+  }
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; 
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -60,7 +74,7 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={chef.avatar || "/placeholder.svg"} alt={chef.name} />
+                    <AvatarImage src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${chef.avatar}`} alt={chef.name} />
                     <AvatarFallback>
                       {chef.name
                         .split(" ")
@@ -92,7 +106,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="cursor-pointer text-destructive focus:text-destructive pointer-events-auto"
                   style={{ background: "none" }}
                 >
