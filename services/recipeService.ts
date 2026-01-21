@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/axios";
-import { Recipe } from "@/types/recipeType";
+import { Recipe, RecipeFormValues } from "@/types/recipeType";
 import { ApiResponse } from "@/types/apiResponse";
 
 const recipeService = {
@@ -10,7 +10,7 @@ const recipeService = {
       search?: string;
       sort?: string;
       home?: boolean;
-    } = {}
+    } = {},
   ): Promise<ApiResponse<Recipe[]>> => {
     const {
       page = 1,
@@ -30,7 +30,7 @@ const recipeService = {
   getRecipeBySlug: async (slug: string): Promise<ApiResponse<Recipe>> => {
     try {
       const response = await apiClient.get<ApiResponse<Recipe>>(
-        `/recipes/${slug}`
+        `/recipes/${slug}`,
       );
       return response.data;
     } catch (error) {
@@ -38,14 +38,14 @@ const recipeService = {
     }
   },
 
- getMyOwnRecipes: async (
+  getMyOwnRecipes: async (
     options: {
       page?: number | string;
       limit?: number | string;
       search?: string;
       sort?: string;
       home?: boolean;
-    } = {}
+    } = {},
   ): Promise<ApiResponse<Recipe[]>> => {
     const {
       page = 1,
@@ -55,21 +55,43 @@ const recipeService = {
       home = false,
     } = options;
 
-    const response = await apiClient.get<ApiResponse<Recipe[]>>("/recipes/my-recipes", {
-      params: { page, limit, search, sort, home: home.toString() },
-    });
+    const response = await apiClient.get<ApiResponse<Recipe[]>>(
+      "/recipes/my-recipes",
+      {
+        params: { page, limit, search, sort, home: home.toString() },
+      },
+    );
 
     return response.data;
   },
 
-  deleteOneRecipe: async (id:string) => {
+  deleteOneRecipe: async (id: string) => {
     try {
-      const response  = await apiClient.delete(`/recipes/${id}`)
-      return response.data
+      const response = await apiClient.delete(`/recipes/${id}`);
+      return response.data;
     } catch (error) {
-      throw error
+      throw error;
     }
-  }
+  },
+
+  storeNewRecipe: async (payload: RecipeFormValues) => {
+    try {
+      const response = await apiClient.post<ApiResponse<Recipe>>("/recipes", payload);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateRecipe: async (id:string, payload: RecipeFormValues) => {
+    try {
+      const response = await apiClient.patch<ApiResponse<Recipe>>(`/recipes/${id}`, payload);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
 };
 
-export default recipeService
+export default recipeService;
