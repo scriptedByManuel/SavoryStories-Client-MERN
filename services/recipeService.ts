@@ -37,6 +37,39 @@ const recipeService = {
       throw error;
     }
   },
+
+ getMyOwnRecipes: async (
+    options: {
+      page?: number | string;
+      limit?: number | string;
+      search?: string;
+      sort?: string;
+      home?: boolean;
+    } = {}
+  ): Promise<ApiResponse<Recipe[]>> => {
+    const {
+      page = 1,
+      limit = 6,
+      search = "",
+      sort = "newest",
+      home = false,
+    } = options;
+
+    const response = await apiClient.get<ApiResponse<Recipe[]>>("/recipes/my-recipes", {
+      params: { page, limit, search, sort, home: home.toString() },
+    });
+
+    return response.data;
+  },
+
+  deleteOneRecipe: async (id:string) => {
+    try {
+      const response  = await apiClient.delete(`/recipes/${id}`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
 };
 
 export default recipeService

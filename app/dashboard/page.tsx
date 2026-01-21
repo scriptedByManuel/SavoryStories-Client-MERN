@@ -19,23 +19,24 @@ import { Blog } from "@/types/blogType";
 
 export default function DashboardPage() {
   const { chef } = useProfileStore();
-  const { getAllRecipes } = recipeService;
-  const { getAllBlogs } = blogService;
+  const { getMyOwnRecipes, deleteOneRecipe } = recipeService;
+  const { getMyOwnBlogs, deleteOneBlog } = blogService;
 
   const [isMounted, setIsMounted] = useState(false);
   const [visibleRecipes, setVisibleRecipes] = useState(6);
   const [visibleBlogs, setVisibleBlogs] = useState(6);
+  
 
   const recipeEndRef = useRef<HTMLDivElement>(null);
   const blogEndRef = useRef<HTMLDivElement>(null);
 
-  const { items: recipes = [], isLoading: loadingRecipes } = useOwnItem(
+  const { items: recipes = [], isLoading: loadingRecipes, mutate: mutateRecipes } = useOwnItem(
     "recipes",
-    getAllRecipes,
+    getMyOwnRecipes,
   );
-  const { items: blogs = [], isLoading: loadingBlogs } = useOwnItem(
+  const { items: blogs = [], isLoading: loadingBlogs, mutate: mutateBlogs } = useOwnItem(
     "blogs",
-    getAllBlogs,
+    getMyOwnBlogs,
   );
 -
   // Initial mount check for Hydration
@@ -188,7 +189,7 @@ export default function DashboardPage() {
                 animate={{ opacity: 1 }}
               >
                 {displayedRecipes.map((recipe: Recipe) => (
-                  <ChefRecipeCard key={recipe._id} recipe={recipe} />
+                  <ChefRecipeCard key={recipe._id} recipe={recipe} deleteOneRecipe={deleteOneRecipe} onDeleteSuccess={() => mutateRecipes()} />
                 ))}
               </motion.div>
               
@@ -225,7 +226,7 @@ export default function DashboardPage() {
                 animate={{ opacity: 1 }}
               >
                 {displayedBlogs.map((blog: Blog) => (
-                  <ChefBlogCard key={blog._id} blog={blog} />
+                  <ChefBlogCard key={blog._id} blog={blog} deleteOneBlog={deleteOneBlog} onDeleteSuccess={() => mutateBlogs()} />
                 ))}
               </motion.div>
               
