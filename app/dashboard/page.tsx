@@ -189,7 +189,7 @@ export default function DashboardPage() {
                 animate={{ opacity: 1 }}
               >
                 {displayedRecipes.map((recipe: Recipe) => (
-                  <ChefRecipeCard key={recipe._id} recipe={recipe} deleteOneRecipe={deleteOneRecipe} onDeleteSuccess={() => mutateRecipes()} />
+                  <ChefRecipeCard key={recipe._id} recipe={recipe} deleteOneRecipe={deleteOneRecipe} mutateRecipes={mutateRecipes} />
                 ))}
               </motion.div>
               
@@ -226,7 +226,7 @@ export default function DashboardPage() {
                 animate={{ opacity: 1 }}
               >
                 {displayedBlogs.map((blog: Blog) => (
-                  <ChefBlogCard key={blog._id} blog={blog} deleteOneBlog={deleteOneBlog} onDeleteSuccess={() => mutateBlogs()} />
+                  <ChefBlogCard key={blog._id} blog={blog} deleteOneBlog={deleteOneBlog} mutateBlogs={mutateBlogs} />
                 ))}
               </motion.div>
               

@@ -81,7 +81,7 @@ const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => 
                 <img
                   src={recipe.author?.avatar ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.author.avatar}` : "/placeholder.png"}
                   alt={recipe.author?.name}
-                  className="h-12 w-12 rounded-full object-cover border-2 border-primary/20"
+                  className="h-12 w-12 rounded-full object-cover border-2 border-primary"
                 />
                 <div>
                   <span className="block text-xs text-muted-foreground">Recipe by</span>

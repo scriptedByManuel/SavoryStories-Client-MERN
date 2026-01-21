@@ -126,7 +126,7 @@ const BlogDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
               <h3 className="text-xl font-bold mb-4">About the Author</h3>
               <Card className="p-6 bg-muted/50">
                 <div className="flex items-start gap-4">
-                  <div className="h-16 w-16 rounded-full border-1 border-primary overflow-hidden bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+                  <div className="h-16 w-16 rounded-full border-2 border-primary  overflow-hidden bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
                     <img
                       className=""
                       src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${blog?.author?.avatar}`}

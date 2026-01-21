@@ -1,13 +1,34 @@
 "use client";
 import { motion } from "framer-motion";
-import { Calendar, User, Edit2, Trash2 } from "lucide-react";
+import { Calendar, User, Edit2, Trash2, Loader2 } from "lucide-react";
 import { Blog } from "@/types/blogType";
 import { formatDate } from "@/lib/formatDate";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useState } from "react";
 
-const ChefBlogCard = ({ blog, deleteOneBlog, onDeleteSuccess}: { blog: Blog, deleteOneBlog: any, onDeleteSuccess: any }) => {
+const ChefBlogCard = ({
+  blog,
+  deleteOneBlog,
+  mutateBlogs,
+}: {
+  blog: Blog;
+  deleteOneBlog: any;
+  mutateBlogs: any;
+}) => {
+  const [isDeleting, setIsDeleting] = useState(false);
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -21,17 +42,21 @@ const ChefBlogCard = ({ blog, deleteOneBlog, onDeleteSuccess}: { blog: Blog, del
     },
   };
 
-   const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    setIsDeleting(true);
     try {
-      const data = await deleteOneBlog(id)
-      onDeleteSuccess()
-      toast.success(data.message)
+      const res = await deleteOneBlog(blog._id);
+      toast.success(res.message || "Blog deleted");
+
+      await mutateBlogs();
     } catch (error: unknown) {
-      if(error instanceof Error) {
-        toast.error("Failed to delete")
+      if (error instanceof Error) {
+        toast.error(error.message || "Something went wrong");
       }
+    } finally {
+      setIsDeleting(false);
     }
-  }
+  };
 
   return (
     <motion.div
@@ -43,7 +68,10 @@ const ChefBlogCard = ({ blog, deleteOneBlog, onDeleteSuccess}: { blog: Blog, del
       className="bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow group h-full flex flex-col"
     >
       {/* Image Section - Link to Detail */}
-      <Link href={`/blog/${blog.slug}`} className="relative h-48 overflow-hidden block">
+      <Link
+        href={`/blog/${blog.slug}`}
+        className="relative h-48 overflow-hidden block"
+      >
         <img
           src={
             blog.featuredImage
@@ -59,7 +87,7 @@ const ChefBlogCard = ({ blog, deleteOneBlog, onDeleteSuccess}: { blog: Blog, del
         <div className="text-xs font-medium text-primary mb-2">
           {blog.category}
         </div>
-        
+
         {/* Title Section - Link to Detail */}
         <Link href={`/blog/${blog.slug}`}>
           <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
@@ -85,20 +113,46 @@ const ChefBlogCard = ({ blog, deleteOneBlog, onDeleteSuccess}: { blog: Blog, del
         {/* Action Buttons - Dashboard Specific */}
         <div className="flex gap-2 mt-4 pt-4">
           <Button size="sm" variant="outline" asChild className="flex-1">
-            <Link href={`/dashboard/edit-blog/${blog._id}`}>
+            <Link href={`/dashboard/edit-blog/${blog.slug}`}>
               <Edit2 className="mr-2 h-3 w-3" />
               Edit
             </Link>
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex-1 text-destructive hover:bg-destructive/10 bg-transparent border-destructive/20"
-            onClick={() => handleDelete(blog._id)}
-          >
-            <Trash2 className="mr-2 h-3 w-3" />
-            Delete
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isDeleting}
+                className="flex-1 text-destructive hover:bg-destructive/10 bg-transparent border-destructive/20"
+              >
+                {isDeleting ? (
+                  <Loader2 className="h-3 w-3 animate-spin mr-2" />
+                ) : (
+                  <Trash2 className="mr-2 h-3 w-3" />
+                )}
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete the blog post "
+                  <strong>{blog.title}</strong>". This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </motion.div>
