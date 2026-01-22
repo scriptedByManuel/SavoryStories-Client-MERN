@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ImagePlus, Loader2, ArrowLeft, Trash2, Plus } from "lucide-react";
+import { ImagePlus, Loader2, ArrowLeft, Trash2, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { RecipeFormValues, recipeSchema } from "@/types/recipeType";
@@ -268,29 +268,41 @@ export default function NewRecipePage() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Recipe Photo</CardTitle>
+                  <CardTitle>Featured Image</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="relative aspect-square rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden bg-muted/30">
+                  <div className="relative aspect-video rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden bg-muted/30 group">
                     {previewImage ? (
-                      <img
-                        src={previewImage}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                      />
+                      <>
+                        <img
+                          src={previewImage}
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPreviewImage(null);
+                            setPhotoFile(null);
+                          }}
+                          className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </>
                     ) : (
                       <Label
-                        htmlFor="image-upload"
+                        htmlFor="blog-image"
                         className="cursor-pointer flex flex-col items-center gap-2"
                       >
                         <ImagePlus className="h-8 w-8 text-muted-foreground" />
-                        <span className="text-xs">Upload Photo</span>
+                        <span className="text-xs">Upload Image</span>
                       </Label>
                     )}
-                    <Input
-                      id="image-upload"
+                    <input
+                      id="blog-image"
                       type="file"
                       className="hidden"
+                      accept="image/*"
                       onChange={handleImageChange}
                     />
                   </div>

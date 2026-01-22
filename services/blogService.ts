@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/axios";
 import { ApiResponse } from "@/types/apiResponse";
-import { Blog } from "@/types/blogType";
+import { Blog, BlogFormValues } from "@/types/blogType";
 
 const blogService = {
   getAllBlogs: async (
@@ -69,7 +69,25 @@ const blogService = {
     } catch (error) {
       throw error
     }
-  }
+  },
+
+    storeNewBlog: async (payload: BlogFormValues) => {
+      try {
+        const response = await apiClient.post<ApiResponse<Blog>>("/blogs", payload);
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
+    },
+  
+    updateBlog: async (id:string, payload: BlogFormValues) => {
+      try {
+        const response = await apiClient.patch<ApiResponse<Blog>>(`/blogs/${id}`, payload);
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
+    },
 };
 
 export default blogService
