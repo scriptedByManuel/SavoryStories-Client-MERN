@@ -82,7 +82,6 @@ export function ProfileSettings() {
   };
 
   const handleDeleteAccount = async () => {
-    if (confirm("Are you sure? This will permanently delete your chef account and all recipes.")) {
       try {
         await deleteAccount();
         toast.success("Account deleted. Hope to see you again!");
@@ -90,7 +89,6 @@ export function ProfileSettings() {
       } catch (error: any) {
         toast.error("Failed to delete account");
       }
-    }
   };
 
   return (
