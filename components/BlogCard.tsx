@@ -1,8 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { Calendar, User } from "lucide-react";
 import { Blog } from "@/types/blogType";
-import { formatDate } from "@/lib/formatDate";
 
 const BlogCard = ({ blog }: { blog: Blog }) => {
   const cardVariants = {
@@ -17,48 +15,51 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
       },
     },
   };
+
+  const wordsPerMinute = 200;
+  const noOfWords = blog.content ? blog.content.split(/\s+/).length : 0;
+  const readingTime = Math.ceil(noOfWords / wordsPerMinute) || 1;
+
+  const imageUrl = blog.featuredImage
+    ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${blog.featuredImage}`
+    : "/placeholder.png";
+
   return (
     <motion.a
       initial="hidden"
       animate="visible"
       href={`/blog/${blog.slug}`}
+      className="group cursor-pointer block h-full"
       variants={cardVariants}
       whileHover={{ y: -5 }}
     >
-      <div
-        className="bg-card rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group h-full"
-        onClick={() => (window.location.href = `/blog/${blog.slug}`)}
-      >
-        <div className="relative h-48 overflow-hidden">
+      <div className="bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+        <div className="relative h-48 overflow-hidden bg-muted">
           <img
-            src={
-              blog.featuredImage
-                ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${blog.featuredImage}`
-                : "/placeholder.png"
-            }
+            src={imageUrl}
             alt={blog.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>
-        <div className="p-6">
-          <div className="text-xs font-medium text-primary mb-2">
-            {blog.category}
-          </div>
-          <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
+
+        <div className="p-6 flex flex-col flex-1">
+          <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {blog.title}
           </h3>
-          <p className="text-muted-foreground mb-4 line-clamp-3 text-sm leading-relaxed">
-            {blog.excerpt}
+          
+          <p className="text-muted-foreground mb-4 line-clamp-2 text-sm flex-1">
+            {blog.excerpt || blog.content?.substring(0, 100) + "..."}
           </p>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground pt-4 border-t border-border">
+
+          <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-4 mt-auto">
             <div className="flex items-center gap-1">
-              <User className="h-3 w-3" />
-              <span>{blog.author.name}</span>
+              <span className="font-medium text-foreground">{readingTime}</span>
+              <span>min read</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              <span>{formatDate(blog.createdAt)}</span>
-            </div>
+            
+            <span className="text-primary font-semibold capitalize bg-primary/10 px-2 py-0.5 rounded">
+              {blog.category || "Article"}
+            </span>
           </div>
         </div>
       </div>

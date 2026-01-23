@@ -14,6 +14,7 @@ import { useItemList } from "@/features/recipe-blog/hooks/useItemList";
 import blogService from "@/services/blogService";
 import { Blog } from "@/types/blogType";
 import BlogCard from "@/components/BlogCard";
+import PublicEmptyState from "@/features/recipe-blog/components/PublicEmptyState";
 
 const BlogPage = () => {
   const { getAllBlogs } = blogService;
@@ -107,11 +108,7 @@ const BlogPage = () => {
         </div>
 
         {isLoading ? null : blogs.length === 0 ? (
-          <div className="container mx-auto px-4 mb-8">
-            <div className="bg-card rounded-lg p-12 text-center">
-              <p className="text-muted-foreground text-lg">No recipes found.</p>
-            </div>
-          </div>
+          <PublicEmptyState />
         ) : (
           <motion.div
             className="container mx-auto px-4"

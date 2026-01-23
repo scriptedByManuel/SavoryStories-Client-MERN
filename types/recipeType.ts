@@ -9,9 +9,9 @@ export interface Recipe {
   description: string;
   ingredients: string[];
   instructions: string[];
-  cookingTime?: number;
-  difficulty?: Difficulty;
-  category?: string;
+  cookingTime: number;
+  difficulty: Difficulty;
+  category: string;
   image?: string;
   author: string | Chef; 
   createdAt: string;

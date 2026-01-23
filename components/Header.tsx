@@ -1,30 +1,47 @@
 "use client";
 import { useDarkModeStore } from "@/stores/useDarkModeStore";
-import { ChefHat, LayoutDashboard, LogOut, Moon, Sun, User } from "lucide-react";
+import {
+  ChefHat,
+  LayoutDashboard,
+  LogOut,
+  Moon,
+  Settings,
+  Sun,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import authService from "@/services/authService";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const [mounted, setMounted]=  useState(false)
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const { chef, logout: clearUser } = useProfileStore();
   const { logout } = authService;
   const { isDark, toggleDarkMode } = useDarkModeStore();
 
   const handleLogout = async () => {
-    await logout()
-    clearUser()
-  }
+    await logout();
+    router.push("/");
+    clearUser();
+  };
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null; 
+  if (!mounted) return null;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -58,23 +75,33 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-           <Button
+          <Button
             variant="ghost"
             size="icon"
             onClick={toggleDarkMode}
             title="Toggle dark mode"
             className="hover:[&_svg]:text-white transition-colors"
           >
-            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {isDark ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
             <span className="sr-only">Toggle dark mode</span>
           </Button>
 
           {chef ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
+                <Button
+                  variant="ghost"
+                  className="relative h-10 w-10 rounded-full p-0"
+                >
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${chef.avatar}`} alt={chef.name} />
+                    <AvatarImage
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${chef.avatar}`}
+                      alt={chef.name}
+                    />
                     <AvatarFallback>
                       {chef.name
                         .split(" ")
@@ -87,8 +114,12 @@ const Header = () => {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{chef.name}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{chef.email}</p>
+                    <p className="text-sm font-medium leading-none">
+                      {chef.name}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {chef.email}
+                    </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -99,9 +130,9 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href={`/chef/${chef.id}`} className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>My Profile</span>
+                  <Link href={'/dashboard/settings'} className="cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4"/>
+                    <span>Settings</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -110,7 +141,7 @@ const Header = () => {
                   className="cursor-pointer text-destructive focus:text-destructive pointer-events-auto"
                   style={{ background: "none" }}
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-2 h-4 w-4"/>
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -124,8 +155,7 @@ const Header = () => {
                 <Link href="/signup">Join as Chef</Link>
               </Button>
             </div>
-          )
-        }
+          )}
         </div>
       </div>
     </header>

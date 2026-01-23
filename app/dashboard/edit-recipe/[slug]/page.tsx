@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 
 // Services & Hooks
-import { RecipeFormValues, recipeSchema } from "@/types/recipeType";
+import { Recipe, RecipeFormValues, recipeSchema } from "@/types/recipeType";
 import recipeService from "@/services/recipeService";
 import uploadService from "@/services/uploadService";
 import useEditSlug from "@/features/dashboard/hooks/useEditSlug";
@@ -47,7 +47,7 @@ export default function EditRecipePage({
 
   // Fetch Existing Data
   const { data, isLoading } = useEditSlug(slug, getRecipeBySlug, "recipes");
-  const recipe = data?.data;
+  const recipe: Recipe = data?.data;
 
   const {
     register,

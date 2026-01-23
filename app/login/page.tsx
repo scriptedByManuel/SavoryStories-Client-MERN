@@ -27,6 +27,14 @@ export default function LoginPage() {
   const { setChef, chef } = useProfileStore();
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
   useEffect(() => {
     setIsMounted(true);
@@ -43,15 +51,6 @@ export default function LoginPage() {
       </div>
     );
   }
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
-  });
 
   const handleLogin = async (data: LoginFormValues) => {
     const payload = {

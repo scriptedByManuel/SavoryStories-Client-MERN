@@ -37,25 +37,7 @@ export default function SignupPage() {
   const { changeNameAndBio } = profileService;
   const { uploadImage } = uploadService;
 
-  const [isRedirecting, setIsRedirecting] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    if (chef) {
-      setIsRedirecting(true);
-      router.replace("/dashboard");
-    }
-  }, [chef, router]);
-
-  if (!isMounted || chef || isRedirecting) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   const {
     register,
     handleSubmit,
@@ -66,8 +48,17 @@ export default function SignupPage() {
     defaultValues: { name: "", email: "", password: "", bio: "" },
   });
 
+  useEffect(() => {
+    setIsMounted(true);
+    if (chef && step === 1 && !photoPreview) {
+    } else if (chef && step === 1) {
+      router.replace("/dashboard");
+    }
+  }, [chef, router]);
+
   const watchedName = watch("name");
 
+  // Multi-step form handler
   const handleInitialSignup = async (data: SignupFormValues) => {
     const user = await signup(data);
     if (user) {
@@ -82,12 +73,12 @@ export default function SignupPage() {
         name: data.name,
         bio: data.bio || "",
       };
+
       const profileResponse = await changeNameAndBio(payload);
 
       if (photoFile) {
         const formData = new FormData();
         formData.append("avatar", photoFile);
-
         const uploadResponse = await uploadImage("/profile/avatar", formData);
 
         updateChef(uploadResponse.data);
@@ -97,10 +88,8 @@ export default function SignupPage() {
 
       toast.success(`Welcome to Savory Stories, ${data.name}`);
       router.push("/dashboard");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(error.message || "Something went wrong");
-      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Profile completion failed");
     }
   };
 
@@ -114,22 +103,43 @@ export default function SignupPage() {
     }
   };
 
+  // Avatar Fallback Text Generator
+  const getFallback = () => {
+    if (!watchedName) return "CH";
+    return watchedName
+      .split(" ")
+      .filter(Boolean)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  // Loading state for mounting/redirecting
+  if (!isMounted || (chef && step === 1)) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-8">
-      <Card className="w-full max-w-md">
+    <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-md border-none shadow-xl bg-card/50 backdrop-blur-sm">
         <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="rounded-full bg-primary/10 p-3">
-              <ChefHat className="h-8 w-8 text-primary" />
+          <div className="flex justify-center mb-6">
+            <div className="rounded-2xl bg-primary p-3 shadow-lg shadow-primary/20">
+              <ChefHat className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">
-            Join our Chef Community
+          <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
+            {step === 1 ? "Chef Registration" : "Set Your Profile"}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-base">
             {step === 1
-              ? "Enter your details to create your chef account"
-              : "Tell us more about yourself and upload a photo"}
+              ? "Create your account to start sharing recipes"
+              : "Let people know who is behind the flavors"}
           </CardDescription>
         </CardHeader>
 
@@ -137,54 +147,55 @@ export default function SignupPage() {
           {step === 1 ? (
             <form
               onSubmit={handleSubmit(handleInitialSignup)}
-              className="space-y-4"
+              className="space-y-5"
             >
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">Chef Name</Label>
                 <Input
                   {...register("name")}
                   id="name"
-                  placeholder="Chef Auguste Gusteau"
-                  required
+                  placeholder="Enter your full name"
                 />
                 {errors.name && (
-                  <p className="text-sm text-destructive">
-                    {errors.name.message}{" "}
+                  <p className="text-xs text-destructive">
+                    {errors.name.message}
                   </p>
                 )}
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
                   {...register("email")}
                   id="email"
                   type="email"
-                  placeholder="chef@example.com"
-                  required
+                  placeholder="chef@savory.com"
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">
-                    {errors.email.message}{" "}
+                  <p className="text-xs text-destructive">
+                    {errors.email.message}
                   </p>
                 )}
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   {...register("password")}
                   id="password"
                   type="password"
-                  required
+                  placeholder="••••••••"
                 />
                 {errors.password && (
-                  <p className="text-sm text-destructive">
-                    {errors.password.message}{" "}
+                  <p className="text-xs text-destructive">
+                    {errors.password.message}
                   </p>
                 )}
               </div>
+
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Continue
+                {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                Continue to Profile
               </Button>
             </form>
           ) : (
@@ -193,26 +204,19 @@ export default function SignupPage() {
               className="space-y-6"
             >
               <div className="flex flex-col items-center gap-4">
-                <div className="relative">
-                  <Avatar className="h-32 w-32 border-4 border-muted">
+                <div className="relative group">
+                  <Avatar className="h-32 w-32 border-4 border-background shadow-2xl transition-transform group-hover:scale-105">
                     <AvatarImage
                       src={photoPreview || ""}
-                      alt="Chef Preview"
                       className="object-cover"
                     />
-                    <AvatarFallback className="bg-muted text-2xl">
-                      {watchedName
-                        ? watchedName
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                        : "CH"}
+                    <AvatarFallback className="bg-primary/10 text-primary text-3xl font-black">
+                      {getFallback()}
                     </AvatarFallback>
                   </Avatar>
                   <Label
                     htmlFor="photo-upload"
-                    className="absolute bottom-0 right-0 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
+                    className="absolute bottom-1 right-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-xl hover:bg-primary/90 transition-all hover:scale-110"
                   >
                     <Camera className="h-5 w-5" />
                     <Input
@@ -224,42 +228,46 @@ export default function SignupPage() {
                     />
                   </Label>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Select your profile photo
-                </p>
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                  Profile Photo
+                </span>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
+                <Label htmlFor="bio">Your Culinary Bio</Label>
                 <Textarea
                   {...register("bio")}
                   id="bio"
-                  placeholder="Tell your culinary story..."
-                  className="h-24 resize-none"
+                  placeholder="Passionate about Italian cuisine and spice fusion..."
+                  className="h-28 resize-none text-base"
                 />
                 {errors.bio && (
-                  <p className="text-sm text-destructive">
-                    {errors.bio.message}{" "}
+                  <p className="text-xs text-destructive">
+                    {errors.bio.message}
                   </p>
                 )}
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Complete My Profile
+              <Button
+                type="submit"
+                className="w-full py-6"
+                disabled={isLoading}
+              >
+                {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                Complete Setup
               </Button>
             </form>
           )}
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-2">
-          <div className="text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
+        <CardFooter className="flex flex-col gap-4 border-t pt-6 ">
+          <div className="text-center text-sm">
+            <span className="text-muted-foreground">Already a member? </span>
             <Link
               href="/login"
-              className="text-primary hover:underline font-medium"
+              className="text-primary hover:text-primary/80 font-bold transition-colors"
             >
-              Log in
+              Sign In
             </Link>
           </div>
         </CardFooter>

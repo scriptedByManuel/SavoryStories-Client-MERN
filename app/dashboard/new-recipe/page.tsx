@@ -74,7 +74,7 @@ export default function NewRecipePage() {
     const file = e.target.files?.[0];
     if (file) {
       setValue("image", file);
-      setPhotoFile(file)
+      setPhotoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setPreviewImage(reader.result as string);
       reader.readAsDataURL(file);
@@ -85,8 +85,8 @@ export default function NewRecipePage() {
     try {
       console.log("Form Data:", data);
       const response = await storeNewRecipe(data);
-      const id = response.data._id
-      if(photoFile){
+      const id = response.data._id;
+      if (photoFile) {
         const imgFormData = new FormData();
         imgFormData.append("image", photoFile);
         await uploadImage(`/recipes/${id}/image`, imgFormData);

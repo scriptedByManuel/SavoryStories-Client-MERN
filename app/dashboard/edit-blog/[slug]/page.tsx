@@ -8,9 +8,7 @@ import {
   ArrowLeft, 
   FileText, 
   ImagePlus, 
-  X, 
   Loader2, 
-  Trash2 
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -23,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Schema & Services
-import { BlogFormValues, blogSchema } from "@/types/blogType";
+import { Blog, BlogFormValues, blogSchema } from "@/types/blogType";
 import blogService from "@/services/blogService";
 import uploadService from "@/services/uploadService";
 import useEditSlug from "@/features/dashboard/hooks/useEditSlug";
@@ -41,7 +39,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
 
   // Fetch Existing Data
   const { data, isLoading } = useEditSlug(slug, getBlogBySlug, "blogs");
-  const blog = data?.data;
+  const blog: Blog = data?.data;
 
   const {
     register,

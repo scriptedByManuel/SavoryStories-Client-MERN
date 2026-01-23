@@ -13,6 +13,7 @@ import Pagination from "@/components/Pagination";
 import recipeService from "@/services/recipeService";
 import { useItemList } from "@/features/recipe-blog/hooks/useItemList";
 import { Recipe } from "@/types/recipeType";
+import PublicEmptyState from "@/features/recipe-blog/components/PublicEmptyState";
 
 export default function RecipesPage() {
   const { getAllRecipes } = recipeService
@@ -109,11 +110,7 @@ export default function RecipesPage() {
         {isLoading ? (
           null
         ) : recipes.length === 0 ? (
-          <div className="container mx-auto px-4 mb-8">
-            <div className="bg-card rounded-lg p-12 text-center">
-              <p className="text-muted-foreground text-lg">No recipes found.</p>
-            </div>
-          </div>
+          <PublicEmptyState />
         ) : (
           <motion.div
             className="container mx-auto px-4"

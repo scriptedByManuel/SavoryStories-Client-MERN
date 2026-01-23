@@ -134,7 +134,7 @@ export default function DashboardPage() {
               </Link>
             </Button>
             <Button asChild variant="outline" size="icon">
-              <Link href={`/chef/settings`} title="Settings">
+              <Link href={`/dashboard/settings`} title="Settings">
                 <Settings className="h-4 w-4" />
               </Link>
             </Button>
