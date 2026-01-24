@@ -16,8 +16,11 @@ import ChefRecipeCard from "@/features/dashboard/components/ChefRecipeCard";
 import { Recipe } from "@/types/recipeType";
 import ChefBlogCard from "@/features/dashboard/components/ChefBlogCard";
 import { Blog } from "@/types/blogType";
+import { useRouter } from "next/navigation";
+import CookingLoader from "@/components/CookingLoader";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { chef } = useProfileStore();
   const { getMyOwnRecipes, deleteOneRecipe } = recipeService;
   const { getMyOwnBlogs, deleteOneBlog } = blogService;
@@ -25,20 +28,21 @@ export default function DashboardPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [visibleRecipes, setVisibleRecipes] = useState(6);
   const [visibleBlogs, setVisibleBlogs] = useState(6);
-  
 
   const recipeEndRef = useRef<HTMLDivElement>(null);
   const blogEndRef = useRef<HTMLDivElement>(null);
 
-  const { items: recipes = [], isLoading: loadingRecipes, mutate: mutateRecipes } = useOwnItem(
-    "recipes",
-    getMyOwnRecipes,
-  );
-  const { items: blogs = [], isLoading: loadingBlogs, mutate: mutateBlogs } = useOwnItem(
-    "blogs",
-    getMyOwnBlogs,
-  );
--
+  const {
+    items: recipes = [],
+    isLoading: loadingRecipes,
+    mutate: mutateRecipes,
+  } = useOwnItem("recipes", getMyOwnRecipes);
+  const {
+    items: blogs = [],
+    isLoading: loadingBlogs,
+    mutate: mutateBlogs,
+  } = useOwnItem("blogs", getMyOwnBlogs);
+
   // Initial mount check for Hydration
   useEffect(() => {
     setIsMounted(true);
@@ -48,13 +52,11 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!isMounted || recipes.length <= visibleRecipes) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisibleRecipes((prev) => Math.min(prev + 6, recipes.length));
-        }
-      },
-    );
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setVisibleRecipes((prev) => Math.min(prev + 6, recipes.length));
+      }
+    });
 
     const currentRef = recipeEndRef.current;
     if (currentRef) observer.observe(currentRef);
@@ -68,13 +70,11 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!isMounted || blogs.length <= visibleBlogs) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisibleBlogs((prev) => Math.min(prev + 6, blogs.length));
-        }
-      },
-    );
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setVisibleBlogs((prev) => Math.min(prev + 6, blogs.length));
+      }
+    });
 
     const currentRef = blogEndRef.current;
     if (currentRef) observer.observe(currentRef);
@@ -85,13 +85,19 @@ export default function DashboardPage() {
   }, [isMounted, blogs.length, visibleBlogs]);
 
   // Prevent hydration error
-  if (!isMounted) return null;
+  if (!isMounted)
+    return (
+      <div className="flex min-h-[80vh] w-full items-center justify-center">
+        <CookingLoader />
+      </div>
+    );
 
   // Loading state
   if (loadingRecipes || loadingBlogs) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        {/* <Loader2 className="h-10 w-10 animate-spin text-primary" /> */}
+        <CookingLoader />
       </div>
     );
   }
@@ -106,9 +112,13 @@ export default function DashboardPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16 border-2 border-primary">
-              <AvatarImage 
-                src={chef?.avatar ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${chef.avatar}` : ""} 
-                alt={chef?.name} 
+              <AvatarImage
+                src={
+                  chef?.avatar
+                    ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${chef.avatar}`
+                    : ""
+                }
+                alt={chef?.name}
                 className="object-cover"
               />
               <AvatarFallback className="bg-primary/10 text-primary font-bold">
@@ -116,8 +126,12 @@ export default function DashboardPage() {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold">Welcome back, {chef?.name || "Chef"}!</h1>
-              <p className="text-muted-foreground">Manage your culinary journey here.</p>
+              <h1 className="text-2xl font-bold">
+                Welcome back, {chef?.name || "Chef"}!
+              </h1>
+              <p className="text-muted-foreground">
+                Manage your culinary journey here.
+              </p>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -145,12 +159,16 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Total Recipes</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Recipes
+              </CardTitle>
               <BookOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{recipes.length}</div>
-              <p className="text-xs text-muted-foreground">Published masterpieces</p>
+              <p className="text-xs text-muted-foreground">
+                Published masterpieces
+              </p>
             </CardContent>
           </Card>
           <Card>
@@ -189,10 +207,15 @@ export default function DashboardPage() {
                 animate={{ opacity: 1 }}
               >
                 {displayedRecipes.map((recipe: Recipe) => (
-                  <ChefRecipeCard key={recipe._id} recipe={recipe} deleteOneRecipe={deleteOneRecipe} mutateRecipes={mutateRecipes} />
+                  <ChefRecipeCard
+                    key={recipe._id}
+                    recipe={recipe}
+                    deleteOneRecipe={deleteOneRecipe}
+                    mutateRecipes={mutateRecipes}
+                  />
                 ))}
               </motion.div>
-              
+
               {visibleRecipes < recipes.length && (
                 <div ref={recipeEndRef} className="flex justify-center py-8">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -226,10 +249,15 @@ export default function DashboardPage() {
                 animate={{ opacity: 1 }}
               >
                 {displayedBlogs.map((blog: Blog) => (
-                  <ChefBlogCard key={blog._id} blog={blog} deleteOneBlog={deleteOneBlog} mutateBlogs={mutateBlogs} />
+                  <ChefBlogCard
+                    key={blog._id}
+                    blog={blog}
+                    deleteOneBlog={deleteOneBlog}
+                    mutateBlogs={mutateBlogs}
+                  />
                 ))}
               </motion.div>
-              
+
               {visibleBlogs < blogs.length && (
                 <div ref={blogEndRef} className="flex justify-center py-8">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />

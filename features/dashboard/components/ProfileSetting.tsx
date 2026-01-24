@@ -14,6 +14,7 @@ import { Camera, Loader2, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import profileService from "@/services/profileService";
 import uploadService from "@/services/uploadService";
+import { useRouter } from "next/navigation";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -23,6 +24,7 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export function ProfileSettings() {
+  const router = useRouter();
   const { chef, updateChef, logout } = useProfileStore();
   const { changeNameAndBio, deleteAccount } = profileService;
   const { uploadImage } = uploadService;
@@ -53,21 +55,21 @@ export function ProfileSettings() {
     try {
       // Step A: Update Name and Bio
       const profileRes = await changeNameAndBio(data);
-      let updatedChefData = profileRes.data.data || profileRes.data;
+      let updatedChefData = profileRes.data;
 
       // Step B: Update Image if selected
       if (photoFile) {
         const formData = new FormData();
         formData.append("avatar", photoFile);
         const uploadRes = await uploadImage("/profile/avatar", formData);
-        updatedChefData = uploadRes.data.data || uploadRes.data;
+        updatedChefData = uploadRes.data;
       }
 
       updateChef(updatedChefData);
       toast.success("Profile updated successfully!");
       setPhotoFile(null);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to update profile");
+    } catch (error: unknown) {
+      toast.error("Failed to update profile");
     } finally {
       setIsLoading(false);
     }
@@ -86,7 +88,8 @@ export function ProfileSettings() {
         await deleteAccount();
         toast.success("Account deleted. Hope to see you again!");
         logout();
-      } catch (error: any) {
+        router.push("/");
+      } catch (error: unknown) {
         toast.error("Failed to delete account");
       }
   };
@@ -160,7 +163,7 @@ export function ProfileSettings() {
             </div>
           </div>
 
-          <Button disabled={isLoading} className="px-10 font-black uppercase tracking-tight shadow-md">
+          <Button disabled={isLoading} className="px-10  tracking-tight shadow-md">
             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save Changes
           </Button>

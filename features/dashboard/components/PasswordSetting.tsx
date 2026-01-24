@@ -73,11 +73,7 @@ export function PasswordSettings() {
             id="currentPassword"
             type="password"
             placeholder="••••••••"
-            className={`bg-secondary/10 border-border/40 focus:bg-background ${
-              errors.currentPassword
-                ? "border-destructive focus-visible:ring-destructive"
-                : ""
-            }`}
+            className="bg-secondary/10 border-border/40 focus:bg-background"
             {...register("currentPassword")}
           />
           {errors.currentPassword && (
@@ -94,11 +90,7 @@ export function PasswordSettings() {
             id="newPassword"
             type="password"
             placeholder="••••••••"
-            className={`bg-secondary/10 border-border/40 focus:bg-background ${
-              errors.newPassword
-                ? "border-destructive focus-visible:ring-destructive"
-                : ""
-            }`}
+            className="bg-secondary/10 border-border/40 focus:bg-background"
             {...register("newPassword")}
           />
           {errors.newPassword && (
@@ -111,7 +103,7 @@ export function PasswordSettings() {
         <Button
           type="submit"
           disabled={isLoading}
-          className="px-10 font-black uppercase tracking-tight shadow-lg shadow-primary/10"
+          className="px-10 racking-tight shadow-lg shadow-primary/10"
         >
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

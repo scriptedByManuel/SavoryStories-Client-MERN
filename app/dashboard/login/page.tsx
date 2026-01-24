@@ -24,8 +24,7 @@ import { useProfileStore } from "@/stores/useProfileStore";
 export default function LoginPage() {
   const router = useRouter();
   const { signin, isLoading } = useSignin();
-  const { setChef, chef } = useProfileStore();
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const { setChef } = useProfileStore();
   const [isMounted, setIsMounted] = useState(false);
   const {
     register,
@@ -38,19 +37,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     setIsMounted(true);
-    if (chef) {
-      setIsRedirecting(true);
-      router.replace("/dashboard");
-    }
-  }, [chef, router]);
-
-  if (!isMounted || chef || isRedirecting) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  }, []);
 
   const handleLogin = async (data: LoginFormValues) => {
     const payload = {
@@ -63,6 +50,14 @@ export default function LoginPage() {
       router.push("/dashboard");
     }
   };
+
+  if (!isMounted) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-8">
@@ -101,6 +96,7 @@ export default function LoginPage() {
               <Input
                 {...register("password")}
                 id="password"
+                placeholder="••••••••"
                 type="password"
                 required
               />

@@ -41,7 +41,24 @@ const Header = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background h-16">
+        <div className="container mx-auto flex h-full items-center justify-between px-4">
+          {/* Logo Placeholder */}
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-6 rounded bg-muted animate-pulse" />
+            <div className="h-6 w-32 bg-muted rounded animate-pulse" />
+          </div>
+          {/* Navigation/Buttons Placeholder */}
+          <div className="flex gap-4">
+            <div className="h-8 w-20 bg-muted rounded animate-pulse hidden md:block" />
+            <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -130,8 +147,8 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href={'/dashboard/settings'} className="cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4"/>
+                  <Link href={"/dashboard/settings"} className="cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </Link>
                 </DropdownMenuItem>
@@ -141,7 +158,7 @@ const Header = () => {
                   className="cursor-pointer text-destructive focus:text-destructive pointer-events-auto"
                   style={{ background: "none" }}
                 >
-                  <LogOut className="mr-2 h-4 w-4"/>
+                  <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

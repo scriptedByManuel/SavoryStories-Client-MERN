@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { PasswordSettings } from "@/features/dashboard/components/PasswordSetting";
 import { ProfileSettings } from "@/features/dashboard/components/ProfileSetting";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -10,6 +12,13 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <main className="flex-1 container mx-auto px-4 py-8">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Dashboard
+        </Link>
         
         {/* Page Header */}
         <div className="mb-10">

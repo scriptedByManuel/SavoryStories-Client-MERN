@@ -32,7 +32,7 @@ export default function SignupPage() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
-  const { chef, setChef, updateChef } = useProfileStore();
+  const { setChef, updateChef } = useProfileStore();
   const { signup, isLoading } = useSignup();
   const { changeNameAndBio } = profileService;
   const { uploadImage } = uploadService;
@@ -50,11 +50,7 @@ export default function SignupPage() {
 
   useEffect(() => {
     setIsMounted(true);
-    if (chef && step === 1 && !photoPreview) {
-    } else if (chef && step === 1) {
-      router.replace("/dashboard");
-    }
-  }, [chef, router]);
+  }, []);
 
   const watchedName = watch("name");
 
@@ -115,8 +111,7 @@ export default function SignupPage() {
       .slice(0, 2);
   };
 
-  // Loading state for mounting/redirecting
-  if (!isMounted || (chef && step === 1)) {
+  if (!isMounted) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -260,14 +255,14 @@ export default function SignupPage() {
           )}
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-4 border-t pt-6 ">
+        <CardFooter className="flex flex-col gap-2">
           <div className="text-center text-sm">
             <span className="text-muted-foreground">Already a member? </span>
             <Link
               href="/login"
               className="text-primary hover:text-primary/80 font-bold transition-colors"
             >
-              Sign In
+              Sign in
             </Link>
           </div>
         </CardFooter>

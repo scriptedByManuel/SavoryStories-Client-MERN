@@ -75,12 +75,13 @@ export default function NewBlogPage() {
   return (
     <div className="min-h-screen flex flex-col bg-muted/20">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
-        <Button asChild variant="ghost" className="mb-6">
-          <Link href="/dashboard">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
-          </Link>
-        </Button>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Dashboard
+        </Link>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex justify-between items-center">
