@@ -6,13 +6,15 @@ export const useFeaturedBlogs = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { getAllBlogs } = blogService;
+
 
   useEffect(() => {
     const fetchBlogs = async () => {
       setError(null);
       try {
-        setIsLoading(true); // Loading ကို စကတည်းက true ပေးထားတာ ပိုသေချာပါတယ်
-        const response = await blogService.getAllBlogs({ home: true });
+        setIsLoading(true); 
+        const response = await getAllBlogs({ home: true });
         setBlogs(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
