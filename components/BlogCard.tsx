@@ -1,9 +1,9 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Blog } from "@/types/blogType";
 
 const BlogCard = ({ blog }: { blog: Blog }) => {
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
@@ -14,7 +14,7 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
         damping: 12,
       },
     },
-  };
+  } ;
 
   const wordsPerMinute = 200;
   const noOfWords = blog.content ? blog.content.split(/\s+/).length : 0;

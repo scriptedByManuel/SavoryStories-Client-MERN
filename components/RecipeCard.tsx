@@ -1,8 +1,8 @@
 import { Recipe } from "@/types/recipeType";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,

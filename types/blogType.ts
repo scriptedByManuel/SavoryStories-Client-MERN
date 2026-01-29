@@ -9,7 +9,7 @@ export interface Blog {
   excerpt?: string;
   content: string;
   featuredImage?: string;
-  author: string | Chef;
+  author: Chef;
   createdAt: string;
   updatedAt: string;
 }

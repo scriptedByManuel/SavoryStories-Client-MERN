@@ -38,8 +38,8 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Fetch Existing Data
-  const { data, isLoading } = useEditSlug(slug, getBlogBySlug, "blogs");
-  const blog: Blog = data?.data;
+  const { data, isLoading } = useEditSlug<Blog>(slug, getBlogBySlug, "blogs");
+  const blog = data;
 
   const {
     register,

@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Calendar, User, Edit2, Trash2, Loader2 } from "lucide-react";
 import { Blog } from "@/types/blogType";
 import { formatDate } from "@/lib/formatDate";
@@ -29,7 +29,7 @@ const ChefBlogCard = ({
   mutateBlogs: any;
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,

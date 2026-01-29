@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  bio: z.string().max(500, "Bio must be under 500 characters").optional(),
+  bio: z.string().max(500, "Bio must be under 500 characters"),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;

@@ -1,19 +1,17 @@
 import { ApiResponse } from "@/types/apiResponse";
-import { Blog } from "@/types/blogType";
-import { Recipe } from "@/types/recipeType";
 import useSWR from "swr";
 
-const useSlug = (slug: string, service: (slug: string) => Promise<ApiResponse<Recipe | Blog >>, route: string) => {
+const useSlug = <T>(slug: string, service: (slug: string) => Promise<ApiResponse<T>>, route: string) => {
   const { data, error, isLoading } = useSWR(
     slug ? `/${route}/${slug}` : null, 
     () => service(slug)                  
   );
 
   return { 
-    data, 
+    data: data?.data as T, 
     error, 
     isLoading 
   };
 };
 
-export default useSlug
+export default useSlug;

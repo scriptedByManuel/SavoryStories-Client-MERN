@@ -8,13 +8,14 @@ import { ArrowLeft, Calendar, User } from "lucide-react";
 import Link from "next/link";
 import React, { use } from "react";
 import { BlogDetailSkeleton } from "@/features/recipe-blog/components/BlogDetailSkeleton";
+import { Blog } from "@/types/blogType";
 
 const BlogDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = use(params);
   const { getBlogBySlug } = blogService;
-  const { data, isLoading } = useSlug(slug, getBlogBySlug, "blogs");
+  const { data, isLoading } = useSlug<Blog>(slug, getBlogBySlug, "blogs");
 
-  const blog = data?.data;
+  const blog = data;
 
   const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL;
 

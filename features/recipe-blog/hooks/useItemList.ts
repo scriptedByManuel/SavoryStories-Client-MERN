@@ -4,7 +4,7 @@ import { useCallback, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useSWR from "swr";
 
-export const useItemList = (route: string, service) => {
+export const useItemList = (route: string, service: any) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

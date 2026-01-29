@@ -46,8 +46,8 @@ export default function EditRecipePage({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Fetch Existing Data
-  const { data, isLoading } = useEditSlug(slug, getRecipeBySlug, "recipes");
-  const recipe: Recipe = data?.data;
+  const { data, isLoading } = useEditSlug<Recipe>(slug, getRecipeBySlug, "recipes");
+  const recipe = data;
 
   const {
     register,
@@ -57,7 +57,7 @@ export default function EditRecipePage({
     reset,
     formState: { isSubmitting, errors },
   } = useForm<RecipeFormValues>({
-    resolver: zodResolver(recipeSchema),
+    resolver: zodResolver(recipeSchema) as any,
   });
 
   useEffect(() => {

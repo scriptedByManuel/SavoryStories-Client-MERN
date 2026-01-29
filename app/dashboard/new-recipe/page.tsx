@@ -38,7 +38,7 @@ export default function NewRecipePage() {
     getValues,
     formState: { isSubmitting, errors },
   } = useForm<RecipeFormValues>({
-    resolver: zodResolver(recipeSchema),
+    resolver: zodResolver(recipeSchema) as any,
     defaultValues: {
       title: "",
       description: "",

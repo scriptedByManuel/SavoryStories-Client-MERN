@@ -8,13 +8,14 @@ import Link from "next/link";
 import { RecipeDetailSkeleton } from "@/features/recipe-blog/components/RecipeDetailSkeleton";
 import { RecipeNotFound } from "@/features/recipe-blog/components/BlogNotFound";
 import useSlug from "@/features/recipe-blog/hooks/useSlug";
+import { Recipe } from "@/types/recipeType";
 
 const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = use(params);
   const { getRecipeBySlug } = recipeService;
-  const { data, isLoading } = useSlug(slug, getRecipeBySlug, 'recipes');
+  const { data, isLoading } = useSlug<Recipe>(slug, getRecipeBySlug, 'recipes');
 
-  const recipe = data?.data;
+  const recipe = data;
 
   const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL;
 
