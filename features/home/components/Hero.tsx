@@ -1,8 +1,11 @@
+"use client";
 import React from "react";
 import { Button } from "../../../components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/router";
 
 const Hero = () => {
+  const router = useRouter();
   return (
     <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
       <div
@@ -24,6 +27,7 @@ const Hero = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
           <Button
+            onClick={() => router.push("/recipes")}
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
@@ -31,6 +35,7 @@ const Hero = () => {
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button
+            onClick={() => router.push("/blogs")}
             size="lg"
             variant="outline"
             className="bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur"

@@ -4,7 +4,7 @@ import RecipeCard from '@/components/RecipeCard';
 import { useFeaturedRecipes } from '../hooks/useFeaturedRecipes';
 
 const FeaturedRecipes = () => {
-  const { recipes } = useFeaturedRecipes()
+  const { recipes, isLoading } = useFeaturedRecipes()
 
   return (
     <section className="py-16 md:py-24">
@@ -17,9 +17,11 @@ const FeaturedRecipes = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {recipes.map((recipe: Recipe) => (
+          {!isLoading && (
+          
+          recipes.map((recipe: Recipe) => (
             <RecipeCard key={recipe._id} recipe={recipe} />
-          ))}
+          )))}
         </div>
       </div>
     </section>

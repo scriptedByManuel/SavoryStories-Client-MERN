@@ -4,9 +4,11 @@ import { Blog } from "@/types/blogType";
 import BlogCard from "@/components/BlogCard";
 import { Button } from "@/components/ui/button";
 import { useFeaturedBlogs } from "../hooks/useFeaturedBlogs";
+import { useRouter } from "next/router";
 
 const BlogSection = () => {
-  const { blogs } = useFeaturedBlogs()
+  const { blogs, isLoading } = useFeaturedBlogs()
+  const router = useRouter();
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -20,13 +22,15 @@ const BlogSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {blogs.map((blog: Blog) => (
+          {!isLoading && (
+          blogs.map((blog: Blog) => (
             <BlogCard key={blog._id} blog={blog} />
-          ))}
+          )))
+          }
         </div>
 
         <div className="text-center">
-          <Button size="lg" variant="outline">
+          <Button onClick={() => router.push("/blogs")} size="lg" variant="outline">
             View All Posts
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
