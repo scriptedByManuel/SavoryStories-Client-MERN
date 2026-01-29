@@ -4,7 +4,7 @@ import { Blog } from "@/types/blogType";
 import BlogCard from "@/components/BlogCard";
 import { Button } from "@/components/ui/button";
 import { useFeaturedBlogs } from "../hooks/useFeaturedBlogs";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const BlogSection = () => {
   const { blogs, isLoading } = useFeaturedBlogs()

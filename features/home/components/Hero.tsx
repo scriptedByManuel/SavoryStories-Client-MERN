@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "../../../components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
   const router = useRouter();
