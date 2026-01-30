@@ -47,6 +47,7 @@ export default function LoginPage() {
     const user = await signin(payload);
     if (user) {
       setChef(user);
+      router.refresh()
       router.push("/dashboard");
     }
   };

@@ -21,7 +21,7 @@ export const useSignin = () => {
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
-        toast.error(error.message);
+        toast.error("Login Failed");
       }
     } finally {
       setIsLoading(false);

@@ -83,9 +83,10 @@ export default function SignupPage() {
       }
 
       toast.success(`Welcome to Savory Stories, ${data.name}`);
+      router.refresh();
       router.push("/dashboard");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Profile completion failed");
+      toast.error("Profile completion failed");
     }
   };
 

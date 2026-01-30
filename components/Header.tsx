@@ -33,6 +33,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     await logout();
+    router.refresh();
     router.push("/");
     clearUser();
   };
