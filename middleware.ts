@@ -2,19 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Token ကို cookie ထဲကနေ ဖတ်မယ်
   const token = request.cookies.get('jwt')?.value;
   const { pathname } = request.nextUrl;
 
+  // 1. Define routes
   const isAuthPage = pathname === '/login' || pathname === '/signup';
   const isDashboardPage = pathname.startsWith('/dashboard');
 
+  // 2. Logic for Guest Users
   if (isDashboardPage && !token) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('from', pathname);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
+  // 3. Logic for Logged-in Users
   if (isAuthPage && token) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
@@ -24,6 +24,8 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/dashboard/:path*', 
+    '/login', 
+    '/signup'
   ],
 };
