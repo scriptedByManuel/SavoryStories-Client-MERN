@@ -30,7 +30,7 @@ const BlogSection = () => {
         </div>
 
         <div className="text-center">
-          <Button onClick={() => router.push("/blogs")} size="lg" variant="outline">
+          <Button onClick={() => router.push("/blog")} size="lg" variant="outline">
             View All Posts
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

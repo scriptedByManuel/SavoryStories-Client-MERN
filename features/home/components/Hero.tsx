@@ -35,7 +35,7 @@ const Hero = () => {
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button
-            onClick={() => router.push("/blogs")}
+            onClick={() => router.push("/blog")}
             size="lg"
             variant="outline"
             className="bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur"
