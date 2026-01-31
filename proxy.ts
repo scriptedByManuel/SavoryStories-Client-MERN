@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
-  const token = request.cookies.get('jwt')?.value;
-  const { pathname } = request.nextUrl;
+  const token = await request.cookies.get('jwt')?.value;
+  const { pathname } = await request.nextUrl;
 
   // 1. Define routes
   const isAuthPage = pathname === '/login' || pathname === '/signup';
