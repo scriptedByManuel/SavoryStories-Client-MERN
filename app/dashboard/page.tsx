@@ -48,6 +48,12 @@ export default function DashboardPage() {
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (isMounted && !chef) {
+      router.push("/login");
+    }
+  }, [isMounted, chef, router]);
+
   // Infinite scroll for recipes
   useEffect(() => {
     if (!isMounted || recipes.length <= visibleRecipes) return;
@@ -85,7 +91,7 @@ export default function DashboardPage() {
   }, [isMounted, blogs.length, visibleBlogs]);
 
   // Prevent hydration error
-  if (!isMounted)
+  if (!isMounted || (!chef && isMounted))
     return (
       <div className="flex min-h-[80vh] w-full items-center justify-center">
         <CookingLoader />
@@ -96,7 +102,6 @@ export default function DashboardPage() {
   if (loadingRecipes || loadingBlogs) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        {/* <Loader2 className="h-10 w-10 animate-spin text-primary" /> */}
         <CookingLoader />
       </div>
     );

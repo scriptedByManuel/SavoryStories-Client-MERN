@@ -20,11 +20,12 @@ import { LoginFormValues, loginSchema } from "@/types/authType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignin } from "@/features/auth/hooks/useSignin";
 import { useProfileStore } from "@/stores/useProfileStore";
+import CookingLoader from "@/components/CookingLoader";
 
 export default function LoginPage() {
   const router = useRouter();
   const { signin, isLoading } = useSignin();
-  const { setChef } = useProfileStore();
+  const { chef, setChef } = useProfileStore();
   const [isMounted, setIsMounted] = useState(false);
   const {
     register,
@@ -39,6 +40,12 @@ export default function LoginPage() {
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (isMounted && chef) {
+      router.push("/dashboard");
+    }
+  }, [isMounted, chef, router]);
+
   const handleLogin = async (data: LoginFormValues) => {
     const payload = {
       email: data.email,
@@ -47,18 +54,16 @@ export default function LoginPage() {
     const user = await signin(payload);
     if (user) {
       setChef(user);
-      router.refresh()
       router.push("/dashboard");
     }
   };
 
-  if (!isMounted) {
+  if (!isMounted || (chef && isMounted))
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex min-h-[80vh] w-full items-center justify-center">
+        <CookingLoader />
       </div>
     );
-  }
 
   return (
     <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-8">

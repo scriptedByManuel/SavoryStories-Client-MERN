@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { Camera, ChefHat, Loader2 } from "lucide-react";
 import Link from "next/link";
+import CookingLoader from "@/components/CookingLoader";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function SignupPage() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
-  const { setChef, updateChef } = useProfileStore();
+  const { chef, setChef, updateChef } = useProfileStore();
   const { signup, isLoading } = useSignup();
   const { changeNameAndBio } = profileService;
   const { uploadImage } = uploadService;
@@ -51,6 +52,12 @@ export default function SignupPage() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (isMounted && chef) {
+      router.push("/dashboard");
+    }
+  }, [isMounted, chef, router]);
 
   const watchedName = watch("name");
 
@@ -112,13 +119,12 @@ export default function SignupPage() {
       .slice(0, 2);
   };
 
-  if (!isMounted) {
+  if (!isMounted || (chef && isMounted))
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex min-h-[80vh] w-full items-center justify-center">
+        <CookingLoader />
       </div>
     );
-  }
 
   return (
     <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-12">
