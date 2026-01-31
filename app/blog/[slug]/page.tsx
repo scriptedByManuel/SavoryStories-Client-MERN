@@ -19,40 +19,75 @@ const BlogDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
 
   const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL;
 
-  const blogImageUrl = blog?.featuredImage 
-    ? `${BASE_URL}/${blog.featuredImage}` 
+  const blogImageUrl = blog?.featuredImage
+    ? `${BASE_URL}/${blog.featuredImage}`
     : "/placeholder.png";
 
-  const authorImageUrl = blog?.author?.avatar 
-    ? `${BASE_URL}/${blog.author.avatar}` 
+  const authorImageUrl = blog?.author?.avatar
+    ? `${BASE_URL}/${blog.author.avatar}`
     : "/default-avatar.png";
 
   const renderContent = (content: string) => {
     if (!content) return null;
+
     return content.split("\n\n").map((paragraph, index) => {
-      if (paragraph.startsWith("##")) {
-        return <h2 key={index} className="text-2xl font-bold mt-8 mb-4">{paragraph.replace(/^##\s*/, "")}</h2>;
+      const trimmedPara = paragraph.trim();
+
+      // 1. Headings (##)
+      if (trimmedPara.startsWith("##")) {
+        return (
+          <h2 key={index} className="text-2xl font-bold mt-8 mb-4">
+            {trimmedPara.replace(/^##\s*/, "")}
+          </h2>
+        );
       }
-      if (paragraph.startsWith("-")) {
+
+      // 2. Unordered Lists (-)
+      if (trimmedPara.startsWith("-")) {
         return (
           <ul key={index} className="list-disc list-inside space-y-2 my-4">
-            {paragraph.split("\n").filter(l => l.trim()).map((item, i) => (
-              <li key={i}>{item.replace(/^-\s*/, "")}</li>
-            ))}
+            {trimmedPara
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((item, i) => (
+                <li key={i}>{item.replace(/^-\s*/, "")}</li>
+              ))}
           </ul>
         );
       }
-      return <p key={index} className="text-lg leading-relaxed mb-6">{paragraph}</p>;
+
+      // 3. Numbered Lists (1. or 2. etc)
+      if (/^\d+\./.test(trimmedPara)) {
+        return (
+          <ol key={index} className="list-decimal list-inside space-y-2 my-4">
+            {trimmedPara
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((item, i) => (
+                <li key={i}>{item.replace(/^\d+\.\s*/, "")}</li>
+              ))}
+          </ol>
+        );
+      }
+
+      // 4. Normal Paragraph
+      return (
+        <p key={index} className="text-lg leading-relaxed mb-6">
+          {paragraph}
+        </p>
+      );
     });
   };
-
   if (isLoading) return <BlogDetailSkeleton />;
   if (!blog) return <BlogNotFound />;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <main className="flex-1 container mx-auto px-4 py-12">
-        <Link href="/blog" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors group">
+        <Link
+          href="/blog"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors group"
+        >
           <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
           Back to All Blogs
         </Link>
@@ -72,13 +107,19 @@ const BlogDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-primary/60" />
-                <span className="text-muted-foreground">{formatDate(blog.createdAt)}</span>
+                <span className="text-muted-foreground">
+                  {formatDate(blog.createdAt)}
+                </span>
               </div>
             </div>
           </header>
 
           <div className="relative h-72 md:h-[500px] mb-12 rounded-2xl overflow-hidden shadow-xl">
-            <img src={blogImageUrl} alt={blog.title} className="w-full h-full object-cover" />
+            <img
+              src={blogImageUrl}
+              alt={blog.title}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <div className="prose max-w-none">{renderContent(blog.content)}</div>
@@ -88,11 +129,19 @@ const BlogDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
             <Card className="p-6 md:p-8 bg-muted/30 border-none shadow-sm">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <div className="h-24 w-24 rounded-full border-2 border-primary overflow-hidden bg-primary/10 flex-shrink-0 shadow-md">
-                  <img src={authorImageUrl} alt={blog.author?.name} className="w-full h-full object-cover" />
+                  <img
+                    src={authorImageUrl}
+                    alt={blog.author?.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="text-center md:text-left">
-                  <h4 className="font-bold text-xl mb-2">{blog.author?.name}</h4>
-                  <p className="text-muted-foreground italic leading-relaxed">{blog.author?.bio}</p>
+                  <h4 className="font-bold text-xl mb-2">
+                    {blog.author?.name}
+                  </h4>
+                  <p className="text-muted-foreground italic leading-relaxed">
+                    {blog.author?.bio}
+                  </p>
                 </div>
               </div>
             </Card>
