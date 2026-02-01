@@ -75,12 +75,21 @@ export default function EditRecipePage({
   });
 
   useEffect(() => {
-    if (recipe.image) {
-      setPreviewImage(
-        `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`,
-      );
+    if (recipe) {
+      setValue("title", recipe.title);
+      setValue("description", recipe.description);
+      setValue("cookingTime", recipe.cookingTime);
+      setValue("ingredients", recipe.ingredients);
+      setValue("instructions", recipe.instructions);
+      setValue("difficulty", recipe.difficulty);
+      setValue("category", recipe.category);
+      if (recipe.image) {
+        setPreviewImage(
+          `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`,
+        );
+      }
     }
-  }, [recipe, reset]);
+  }, [recipe, reset, setValue]);
 
   // Field Arrays for Dynamic Inputs
   const {
