@@ -340,24 +340,20 @@ export default function EditRecipePage({
                   <CardTitle>Category</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Select
-                    key={recipe?.category}
-                    onValueChange={(value) =>
-                      setValue("category", value as any)
-                    }
-                    defaultValue={recipe?.category}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="breakfast">Breakfast</SelectItem>
-                      <SelectItem value="lunch">Lunch</SelectItem>
-                      <SelectItem value="dinner">Dinner</SelectItem>
-                      <SelectItem value="dessert">Dessert</SelectItem>
-                      <SelectItem value="snacks">Snacks</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <Input
+                      {...register("category")}
+                      placeholder="e.g. Breakfast, Lunch"
+                    />
+                    <p className="text-[10px] text-muted-foreground italic">
+                      (Type the category name manually)
+                    </p>
+                    {errors.category && (
+                      <p className="text-xs text-destructive">
+                        {errors.category.message}
+                      </p>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
