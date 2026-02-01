@@ -58,6 +58,15 @@ export default function EditRecipePage({
     formState: { isSubmitting, errors },
   } = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeSchema) as any,
+    defaultValues: {
+    title: "",
+    description: "",
+    cookingTime: 0,
+    ingredients: [""],
+    instructions: [""],
+    difficulty: "easy",
+    category: "",
+  },
   });
 
   useEffect(() => {
