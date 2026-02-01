@@ -63,14 +63,14 @@ export default function EditRecipePage({
     formState: { isSubmitting, errors },
   } = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeSchema) as any,
-    values: {
-      title: recipe.title,
-      description: recipe.description,
-      cookingTime: recipe.cookingTime,
-      difficulty: recipe.difficulty,
-      category: recipe.category,
-      ingredients: recipe.ingredients,
-      instructions: recipe.instructions,
+    defaultValues: {
+      title: "",
+      description: "",
+      cookingTime: 0,
+      ingredients: [""],
+      instructions: [""],
+      difficulty: "easy",
+      category: "",
     },
   });
 
@@ -125,7 +125,7 @@ export default function EditRecipePage({
       router.push("/dashboard");
       router.refresh();
     } catch (error: unknown) {
-      if(error instanceof Error){
+      if (error instanceof Error) {
         toast.error("Failed to update recipe");
       }
     }
