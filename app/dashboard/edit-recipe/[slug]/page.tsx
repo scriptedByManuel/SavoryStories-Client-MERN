@@ -81,6 +81,7 @@ export default function EditRecipePage({
       setValue("ingredients", recipe.ingredients);
       setValue("instructions", recipe.instructions);
       setValue("difficulty", recipe.difficulty);
+      setValue("category", recipe.category);
       if (recipe.image) {
         setPreviewImage(
           `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`,
@@ -340,6 +341,7 @@ export default function EditRecipePage({
                 </CardHeader>
                 <CardContent>
                   <Select
+                    key={recipe?.category}
                     onValueChange={(value) =>
                       setValue("category", value as any)
                     }
