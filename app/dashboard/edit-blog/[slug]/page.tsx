@@ -48,6 +48,12 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
     formState: { isSubmitting, errors },
   } = useForm<BlogFormValues>({
     resolver: zodResolver(blogSchema),
+    defaultValues: {
+      title: "",
+      excerpt: "",
+      content: "",
+      category: "",
+    },
   });
 
   // Pre-fill form when data is loaded
@@ -90,7 +96,6 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
 
       toast.success("Blog post updated successfully!");
       router.push("/dashboard");
-      router.refresh();
     } catch (error: unknown) {
       if(error instanceof Error) {
         toast.error(error.message || "Failed to update blog");

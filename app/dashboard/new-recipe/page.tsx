@@ -44,7 +44,7 @@ export default function NewRecipePage() {
       description: "",
       cookingTime: 0,
       difficulty: "medium",
-      category: "breakfast",
+      category: "",
       ingredients: [""],
       instructions: [""],
     },
@@ -93,8 +93,10 @@ export default function NewRecipePage() {
       }
       toast.success("New Recipe is created!");
       router.push("/dashboard");
-    } catch (error) {
-      toast.error("Something went wrong");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("Something went wrong");
+      }
     }
   };
 
@@ -314,21 +316,17 @@ export default function NewRecipePage() {
                   <CardTitle>Category</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Select
-                    onValueChange={(value) => setValue("category", value)}
-                    defaultValue={getValues("category")}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="breakfast">Breakfast</SelectItem>
-                      <SelectItem value="lunch">Lunch</SelectItem>
-                      <SelectItem value="dinner">Dinner</SelectItem>
-                      <SelectItem value="dessert">Dessert</SelectItem>
-                      <SelectItem value="snacks">Snacks</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <Input
+                      {...register("category")}
+                      placeholder="e.g. Breakfast, Lunch"
+                    />
+                    {errors.category && (
+                      <p className="text-xs text-destructive">
+                        {errors.category.message}
+                      </p>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>

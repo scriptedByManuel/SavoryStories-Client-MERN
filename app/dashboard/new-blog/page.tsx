@@ -64,10 +64,9 @@ export default function NewBlogPage() {
 
       toast.success("Blog post published successfully!");
       router.push("/dashboard");
-      router.refresh();
     } catch (error: unknown) {
       if(error instanceof Error){
-        toast.error(error.message || "Something went wrong");
+        toast.error("Something went wrong");
       }
     }
   };

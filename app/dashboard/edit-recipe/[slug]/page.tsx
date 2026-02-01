@@ -67,6 +67,7 @@ export default function EditRecipePage({
       title: "",
       description: "",
       cookingTime: 0,
+      category: "",
       ingredients: [""],
       instructions: [""],
       difficulty: "easy",
@@ -75,13 +76,15 @@ export default function EditRecipePage({
 
   useEffect(() => {
     if (recipe) {
-      setValue("title", recipe.title);
-      setValue("description", recipe.description);
-      setValue("cookingTime", recipe.cookingTime);
-      setValue("ingredients", recipe.ingredients);
-      setValue("instructions", recipe.instructions);
-      setValue("difficulty", recipe.difficulty);
-      setValue("category", recipe.category);
+      reset({
+        title: recipe.title,
+        description: recipe.description,
+        cookingTime: recipe.cookingTime,
+        category: recipe.category,
+        ingredients: recipe.ingredients,
+        instructions: recipe.instructions,
+        difficulty: recipe.difficulty,
+      })
       if (recipe.image) {
         setPreviewImage(
           `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`,
@@ -131,7 +134,6 @@ export default function EditRecipePage({
 
       toast.success("Recipe updated successfully!");
       router.push("/dashboard");
-      router.refresh();
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error("Failed to update recipe");
@@ -345,9 +347,6 @@ export default function EditRecipePage({
                       {...register("category")}
                       placeholder="e.g. Breakfast, Lunch"
                     />
-                    <p className="text-[10px] text-muted-foreground italic">
-                      (Type the category name manually)
-                    </p>
                     {errors.category && (
                       <p className="text-xs text-destructive">
                         {errors.category.message}

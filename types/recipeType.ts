@@ -40,7 +40,7 @@ export const recipeSchema = z.object({
   difficulty: z.enum(["easy", "medium", "hard"]).refine((val) => !!val, {
     message: "Please select a difficulty level",
   }),
-  category: z.string().min(1, "Please select a category"),
+  category: z.string().min(5, "Category cannot be empty"),
   image: z.any().optional(),
 });
 

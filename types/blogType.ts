@@ -16,7 +16,7 @@ export interface Blog {
 
 export const blogSchema = z.object({
   title: z.string().min(10, "Title must be at least 10 characters"),
-  category: z.string().min(1, "Please select a category"),
+  category: z.string().min(5, "Category cannot be empty"),
   excerpt: z.string().min(20, "Excerpt should be at least 20 characters"),
   content: z.string().min(50, "Content is too short. Share more details!"),
   featuredImage: z.any().optional(),
