@@ -27,6 +27,7 @@ import { Recipe, RecipeFormValues, recipeSchema } from "@/types/recipeType";
 import recipeService from "@/services/recipeService";
 import uploadService from "@/services/uploadService";
 import useEditSlug from "@/features/dashboard/hooks/useEditSlug";
+import CookingLoader from "@/components/CookingLoader";
 
 export default function EditRecipePage({
   params,
@@ -46,7 +47,11 @@ export default function EditRecipePage({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Fetch Existing Data
-  const { data, isLoading } = useEditSlug<Recipe>(slug, getRecipeBySlug, "recipes");
+  const { data, isLoading } = useEditSlug<Recipe>(
+    slug,
+    getRecipeBySlug,
+    "recipes",
+  );
   const recipe = data;
 
   const {
@@ -58,34 +63,22 @@ export default function EditRecipePage({
     formState: { isSubmitting, errors },
   } = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeSchema) as any,
-    defaultValues: {
-    title: "",
-    description: "",
-    cookingTime: 0,
-    ingredients: [""],
-    instructions: [""],
-    difficulty: "easy",
-    category: "",
-  },
+    values: {
+      title: recipe.title,
+      description: recipe.description,
+      cookingTime: recipe.cookingTime,
+      difficulty: recipe.difficulty,
+      category: recipe.category,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+    },
   });
 
   useEffect(() => {
-    if (recipe && Object.keys(recipe).length > 0) {
-      reset({
-        title: recipe.title,
-        description: recipe.description,
-        cookingTime: recipe.cookingTime,
-        difficulty: recipe.difficulty,
-        category: recipe.category,
-        ingredients: recipe.ingredients,
-        instructions: recipe.instructions,
-      });
-
-      if (recipe.image) {
-        setPreviewImage(
-          `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`,
-        );
-      }
+    if (recipe.image) {
+      setPreviewImage(
+        `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`,
+      );
     }
   }, [recipe, reset]);
 
@@ -131,15 +124,17 @@ export default function EditRecipePage({
       toast.success("Recipe updated successfully!");
       router.push("/dashboard");
       router.refresh();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to update recipe");
+    } catch (error: unknown) {
+      if(error instanceof Error){
+        toast.error("Failed to update recipe");
+      }
     }
   };
 
   if (isLoading) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <CookingLoader />
       </div>
     );
   }
@@ -338,7 +333,9 @@ export default function EditRecipePage({
                 </CardHeader>
                 <CardContent>
                   <Select
-                    onValueChange={(value) => setValue("category", value as any)}
+                    onValueChange={(value) =>
+                      setValue("category", value as any)
+                    }
                     defaultValue={recipe?.category}
                   >
                     <SelectTrigger>
