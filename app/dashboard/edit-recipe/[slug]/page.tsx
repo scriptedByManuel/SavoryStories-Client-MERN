@@ -70,7 +70,7 @@ export default function EditRecipePage({
   });
 
   useEffect(() => {
-    if (recipe) {
+    if (recipe && Object.keys(recipe).length > 0) {
       reset({
         title: recipe.title,
         description: recipe.description,
