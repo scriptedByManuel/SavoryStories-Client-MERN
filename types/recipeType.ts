@@ -34,9 +34,7 @@ export const recipeSchema = z.object({
   instructions: z
     .array(z.string().min(1, "Step cannot be empty"))
     .min(1, "At least one instruction step is required"),
-  cookingTime: z.coerce
-    .number()
-    .min(1, "Cooking time must be at least 1 minute"),
+  cookingTime: z.number().min(1, "Cooking time must be at least 1 minute"),
   difficulty: z.enum(["easy", "medium", "hard"]).refine((val) => !!val, {
     message: "Please select a difficulty level",
   }),

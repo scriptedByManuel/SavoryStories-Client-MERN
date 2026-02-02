@@ -62,7 +62,7 @@ export default function EditRecipePage({
     reset,
     formState: { isSubmitting, errors },
   } = useForm<RecipeFormValues>({
-    resolver: zodResolver(recipeSchema) as any,
+    resolver: zodResolver(recipeSchema) as never,
     defaultValues: {
       title: "",
       description: "",
@@ -96,18 +96,18 @@ export default function EditRecipePage({
     fields: ingredientFields,
     append: appendIngredient,
     remove: removeIngredient,
-  } = useFieldArray({
-    control,
-    name: "ingredients",
+  } = useFieldArray<RecipeFormValues>({
+    control: control as never,
+    name: "ingredients" as never,
   });
 
   const {
     fields: instructionFields,
     append: appendInstruction,
     remove: removeInstruction,
-  } = useFieldArray({
-    control,
-    name: "instructions",
+  } = useFieldArray<RecipeFormValues>({
+    control: control as never,
+    name: "instructions" as never,
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

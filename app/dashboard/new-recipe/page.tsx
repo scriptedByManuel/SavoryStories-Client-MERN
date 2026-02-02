@@ -38,7 +38,7 @@ export default function NewRecipePage() {
     getValues,
     formState: { isSubmitting, errors },
   } = useForm<RecipeFormValues>({
-    resolver: zodResolver(recipeSchema) as any,
+    resolver: zodResolver(recipeSchema) as never,
     defaultValues: {
       title: "",
       description: "",
@@ -56,8 +56,8 @@ export default function NewRecipePage() {
     append: appendIngredient,
     remove: removeIngredient,
   } = useFieldArray({
-    control,
-    name: "ingredients",
+    control: control as never,
+    name: "ingredients" as never,
   });
 
   // useFieldArray for Instructions
@@ -66,8 +66,8 @@ export default function NewRecipePage() {
     append: appendInstruction,
     remove: removeInstruction,
   } = useFieldArray({
-    control,
-    name: "instructions",
+    control: control as never,
+    name: "instructions" as never,
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
