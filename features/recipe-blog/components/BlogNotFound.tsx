@@ -16,7 +16,7 @@ export function RecipeNotFound() {
 
         <div className="flex flex-col items-center justify-center min-h-[500px] text-center">
           <ChefHat className="h-24 w-24 text-muted-foreground/50 mb-6" />
-          <h1 className="text-4xl font-bold text-foreground mb-4">Blog Not Found</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Recipe Not Found</h1>
           <p className="text-lg text-muted-foreground mb-8 max-w-md">
             Sorry, we couldn't find the blog you're looking for. It may have been removed or the link might be incorrect.
           </p>

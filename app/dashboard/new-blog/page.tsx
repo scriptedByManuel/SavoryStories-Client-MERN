@@ -53,20 +53,23 @@ export default function NewBlogPage() {
 
   const onSubmit = async (data: BlogFormValues) => {
     try {
-      const response = await storeNewBlog(data);
-      const blogId = response.data._id;
-
       if (photoFile) {
-        const formData = new FormData();
-        formData.append("image", photoFile);
-        await uploadImage(`/blogs/${blogId}/image`, formData);
+        const imgFormData = new FormData();
+        imgFormData.append("image", photoFile);
+        const imgResponse = await uploadImage(imgFormData);
+        const payload = {
+          ...data,
+          featuredImage: imgResponse.url,
+        };
+        await storeNewBlog(payload);
+        toast.success("Blog post published successfully!");
+        router.push("/dashboard");
+      } else {
+        toast.warning("Please upload an image");
       }
-
-      toast.success("Blog post published successfully!");
-      router.push("/dashboard");
     } catch (error: unknown) {
-      if(error instanceof Error){
-        toast.error("Something went wrong");
+      if (error instanceof Error) {
+        toast.error("Failed to create new blog post");
       }
     }
   };

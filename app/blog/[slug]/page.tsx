@@ -17,15 +17,9 @@ const BlogDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
 
   const blog = data;
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL;
+  const blogImageUrl = blog?.featuredImage || "/image-placeholder.jpeg";
 
-  const blogImageUrl = blog?.featuredImage
-    ? `${BASE_URL}/${blog.featuredImage}`
-    : "/placeholder.png";
-
-  const authorImageUrl = blog?.author?.avatar
-    ? `${BASE_URL}/${blog.author.avatar}`
-    : "/default-avatar.png";
+  const authorImageUrl = blog?.author?.avatar || "/user-placeholder.jpeg";
 
   const renderContent = (content: string) => {
     if (!content) return null;

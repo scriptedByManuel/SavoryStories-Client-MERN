@@ -51,7 +51,7 @@ const ChefBlogCard = ({
       await mutateBlogs();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message || "Something went wrong");
+        toast.error(error.message || "Failed to delete blog");
       }
     } finally {
       setIsDeleting(false);
@@ -74,9 +74,7 @@ const ChefBlogCard = ({
       >
         <img
           src={
-            blog.featuredImage
-              ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${blog.featuredImage}`
-              : "/placeholder.png"
+            blog.featuredImage || "/image-placeholder.jpeg"
           }
           alt={blog.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

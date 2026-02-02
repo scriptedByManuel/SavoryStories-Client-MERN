@@ -26,15 +26,14 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 export function ProfileSettings() {
   const router = useRouter();
   const { chef, updateChef, logout } = useProfileStore();
-  const { changeNameAndBio, deleteAccount } = profileService;
+  const { updateProfile, deleteAccount } = profileService;
   const { uploadImage } = uploadService;
   const [isLoading, setIsLoading] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL;
-  const currentAvatarUrl = chef?.avatar ? `${BASE_URL}/${chef.avatar}` : "";
+  const currentAvatarUrl = chef?.avatar || "";
 
   // 2. React Hook Form setup
   const {
@@ -53,23 +52,27 @@ export function ProfileSettings() {
   const onSaveProfile = async (data: ProfileFormValues) => {
     setIsLoading(true);
     try {
-      // Step A: Update Name and Bio
-      const profileRes = await changeNameAndBio(data);
-      let updatedChefData = profileRes.data;
-
-      // Step B: Update Image if selected
+      let url = currentAvatarUrl;
       if (photoFile) {
         const formData = new FormData();
-        formData.append("avatar", photoFile);
-        const uploadRes = await uploadImage("/profile/avatar", formData);
-        updatedChefData = uploadRes.data;
+        formData.append("image", photoFile);
+        const uploadRes = await uploadImage(formData);
+        url = uploadRes.url;
       }
-
+      const payload = {
+        name: data.name,
+        bio: data.bio,
+        avatar: url,
+      };
+      const profileRes = await updateProfile(payload);
+      const updatedChefData = profileRes.data;
       updateChef(updatedChefData);
       toast.success("Profile updated successfully!");
       setPhotoFile(null);
     } catch (error: unknown) {
-      toast.error("Failed to update profile");
+      if (error instanceof Error) {
+        toast.error("Failed to update profile");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -84,14 +87,16 @@ export function ProfileSettings() {
   };
 
   const handleDeleteAccount = async () => {
-      try {
-        await deleteAccount();
-        toast.success("Account deleted. Hope to see you again!");
-        logout();
-        router.push("/");
-      } catch (error: unknown) {
+    try {
+      await deleteAccount();
+      toast.success("Account deleted. Hope to see you again!");
+      logout();
+      router.push("/");
+    } catch (error: unknown) {
+      if(error instanceof Error) {
         toast.error("Failed to delete account");
       }
+    }
   };
 
   return (
@@ -141,30 +146,47 @@ export function ProfileSettings() {
 
           <div className="grid gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className="font-bold">Display Name</Label>
+              <Label htmlFor="name" className="font-bold">
+                Display Name
+              </Label>
               <Input
                 {...register("name")}
                 id="name"
                 defaultValue={chef?.name}
-                className={`max-w-md bg-secondary/20 border-border/40 focus:bg-background ${errors.name ? 'border-destructive' : ''}`}
+                className={`max-w-md bg-secondary/20 border-border/40 focus:bg-background ${errors.name ? "border-destructive" : ""}`}
               />
-              {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="text-xs text-destructive">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bio" className="font-bold">Culinary Bio</Label>
+              <Label htmlFor="bio" className="font-bold">
+                Culinary Bio
+              </Label>
               <Textarea
                 {...register("bio")}
                 id="bio"
                 defaultValue={chef?.bio}
                 className="max-w-md bg-secondary/20 border-border/40 focus:bg-background h-32 resize-none"
               />
-              {errors.bio && <p className="text-xs text-destructive">{errors.bio.message}</p>}
+              {errors.bio && (
+                <p className="text-xs text-destructive">{errors.bio.message}</p>
+              )}
             </div>
           </div>
 
-          <Button disabled={isLoading} className="px-10  tracking-tight shadow-md">
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+          <Button
+            disabled={isLoading}
+            className="px-10  tracking-tight shadow-md"
+          >
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
             Save Changes
           </Button>
         </form>
@@ -182,9 +204,14 @@ export function ProfileSettings() {
 
         <div className="p-6 border border-destructive/20 rounded-2xl bg-destructive/5 space-y-4">
           <p className="text-sm font-medium text-muted-foreground leading-relaxed">
-            All your data, including recipes, photos, and followers, will be permanently removed from our servers.
+            All your data, including recipes, photos, and followers, will be
+            permanently removed from our servers.
           </p>
-          <Button onClick={handleDeleteAccount} variant="destructive" className="font-bold px-8">
+          <Button
+            onClick={handleDeleteAccount}
+            variant="destructive"
+            className="font-bold px-8"
+          >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete My Account
           </Button>

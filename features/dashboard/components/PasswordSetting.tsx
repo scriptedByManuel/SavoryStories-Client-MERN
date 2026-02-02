@@ -47,8 +47,10 @@ export function PasswordSettings() {
       await changePassword(data);
       toast.success("Password updated successfully!");
       reset();
-    } catch (error: any) {
-      toast.error("Failed to update password");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("Failed to update password");
+      }
     } finally {
       setIsLoading(false);
     }

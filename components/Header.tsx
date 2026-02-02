@@ -116,7 +116,7 @@ const Header = () => {
                 >
                   <Avatar className="h-10 w-10">
                     <AvatarImage
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${chef.avatar}`}
+                      src={chef.avatar || "/user-placeholder.jpeg"}
                       alt={chef.name}
                     />
                     <AvatarFallback>

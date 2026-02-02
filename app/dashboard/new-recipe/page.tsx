@@ -73,7 +73,6 @@ export default function NewRecipePage() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setValue("image", file);
       setPhotoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setPreviewImage(reader.result as string);
@@ -83,19 +82,23 @@ export default function NewRecipePage() {
 
   const onSubmit = async (data: RecipeFormValues) => {
     try {
-      console.log("Form Data:", data);
-      const response = await storeNewRecipe(data);
-      const id = response.data._id;
       if (photoFile) {
         const imgFormData = new FormData();
         imgFormData.append("image", photoFile);
-        await uploadImage(`/recipes/${id}/image`, imgFormData);
+        const imgResponse = await uploadImage(imgFormData);
+        const payload = {
+          ...data,
+          image: imgResponse.url,
+        };
+        await storeNewRecipe(payload);
+        toast.success("New Recipe is created!");
+        router.push("/dashboard");
+      } else {
+        toast.warning("Please upload an image");
       }
-      toast.success("New Recipe is created!");
-      router.push("/dashboard");
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error("Something went wrong");
+        toast.error("Failed to create new recipe");
       }
     }
   };

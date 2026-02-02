@@ -60,9 +60,7 @@ const ChefRecipeCard = ({
       >
         <img
           src={
-            recipe.image
-              ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`
-              : "/placeholder.png"
+            recipe.image || "/image-placeholder.jpeg"
           }
           alt={recipe.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

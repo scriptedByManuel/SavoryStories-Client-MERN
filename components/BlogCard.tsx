@@ -20,9 +20,8 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
   const noOfWords = blog.content ? blog.content.split(/\s+/).length : 0;
   const readingTime = Math.ceil(noOfWords / wordsPerMinute) || 1;
 
-  const imageUrl = blog.featuredImage
-    ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${blog.featuredImage}`
-    : "/placeholder.png";
+  const imageUrl = blog.featuredImage || "/image-placeholder.jpeg";
+
 
   return (
     <motion.a

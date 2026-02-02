@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { use } from "react"; 
+import React, { use } from "react";
 import { Badge } from "@/components/ui/badge";
 import recipeService from "@/services/recipeService";
 import { ArrowLeft, ChefHat, Clock, Utensils } from "lucide-react";
@@ -10,22 +10,20 @@ import { RecipeNotFound } from "@/features/recipe-blog/components/BlogNotFound";
 import useSlug from "@/features/recipe-blog/hooks/useSlug";
 import { Recipe } from "@/types/recipeType";
 
-const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => {
+const RecipeDetailPage = ({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) => {
   const { slug } = use(params);
   const { getRecipeBySlug } = recipeService;
-  const { data, isLoading } = useSlug<Recipe>(slug, getRecipeBySlug, 'recipes');
+  const { data, isLoading } = useSlug<Recipe>(slug, getRecipeBySlug, "recipes");
 
   const recipe = data;
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL;
+  const recipeImageUrl = recipe?.image || "/image-placeholder.jpeg";
 
-  const recipeImageUrl = recipe?.image 
-    ? `${BASE_URL}/${recipe.image}` 
-    : "/placeholder.png";
-
-  const chefImageUrl = recipe?.author?.avatar 
-    ? `${BASE_URL}/${recipe.author.avatar}` 
-    : "/placeholder.png";
+  const chefImageUrl = recipe?.author?.avatar || "/user-placeholder.jpeg";
 
   if (isLoading) return <RecipeDetailSkeleton />;
   if (!recipe) return <RecipeNotFound />;
@@ -66,18 +64,30 @@ const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
                 <div className="bg-muted/50 rounded-2xl p-4 text-center">
                   <Clock className="h-6 w-6 mx-auto mb-2 text-primary" />
-                  <span className="block text-sm font-semibold">{recipe.cookingTime} mins</span>
-                  <span className="text-xs text-muted-foreground">Prep & Cook</span>
+                  <span className="block text-sm font-semibold">
+                    {recipe.cookingTime} mins
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Prep & Cook
+                  </span>
                 </div>
                 <div className="bg-muted/50 rounded-2xl p-4 text-center">
                   <ChefHat className="h-6 w-6 mx-auto mb-2 text-primary" />
-                  <span className="block text-sm font-semibold">{recipe.difficulty}</span>
-                  <span className="text-xs text-muted-foreground">Skill Level</span>
+                  <span className="block text-sm font-semibold">
+                    {recipe.difficulty}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Skill Level
+                  </span>
                 </div>
                 <div className="bg-muted/50 rounded-2xl p-4 text-center">
                   <Utensils className="h-6 w-6 mx-auto mb-2 text-primary" />
-                  <span className="block text-sm font-semibold">{recipe.ingredients?.length || 0}</span>
-                  <span className="text-xs text-muted-foreground">Ingredients</span>
+                  <span className="block text-sm font-semibold">
+                    {recipe.ingredients?.length || 0}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Ingredients
+                  </span>
                 </div>
               </div>
 
@@ -88,7 +98,9 @@ const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => 
                   className="h-12 w-12 rounded-full object-cover border-2 border-primary"
                 />
                 <div>
-                  <span className="block text-xs text-muted-foreground">Recipe by</span>
+                  <span className="block text-xs text-muted-foreground">
+                    Recipe by
+                  </span>
                   <div className="font-bold hover:text-primary transition-colors cursor-pointer">
                     {recipe.author.name}
                   </div>
@@ -104,12 +116,17 @@ const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => 
                 Ingredients
               </h2>
               <ul className="space-y-4">
-                {recipe.ingredients?.map((ingredient: string, index: number) => (
-                  <li key={index} className="flex items-start gap-3 text-lg text-muted-foreground pb-4 border-b border-dashed last:border-0">
-                    <span className="h-2 w-2 rounded-full bg-primary mt-2.5 shrink-0" />
-                    {ingredient}
-                  </li>
-                ))}
+                {recipe.ingredients?.map(
+                  (ingredient: string, index: number) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 text-lg text-muted-foreground pb-4 border-b border-dashed last:border-0"
+                    >
+                      <span className="h-2 w-2 rounded-full bg-primary mt-2.5 shrink-0" />
+                      {ingredient}
+                    </li>
+                  ),
+                )}
               </ul>
             </div>
 
@@ -124,7 +141,9 @@ const RecipeDetailPage = ({ params }: { params: Promise<{ slug: string }> }) => 
                     <span className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-primary-foreground font-bold shrink-0 shadow-sm transition-transform group-hover:scale-110">
                       {index + 1}
                     </span>
-                    <p className="text-lg text-muted-foreground leading-relaxed pt-1">{step}</p>
+                    <p className="text-lg text-muted-foreground leading-relaxed pt-1">
+                      {step}
+                    </p>
                   </div>
                 ))}
               </div>

@@ -119,9 +119,7 @@ export default function DashboardPage() {
             <Avatar className="h-16 w-16 border-2 border-primary">
               <AvatarImage
                 src={
-                  chef?.avatar
-                    ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${chef.avatar}`
-                    : ""
+                  chef?.avatar || "/user-placeholder.jpeg"
                 }
                 alt={chef?.name}
                 className="object-cover"

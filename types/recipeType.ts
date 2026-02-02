@@ -40,8 +40,8 @@ export const recipeSchema = z.object({
   difficulty: z.enum(["easy", "medium", "hard"]).refine((val) => !!val, {
     message: "Please select a difficulty level",
   }),
-  category: z.string().min(5, "Category cannot be empty"),
-  image: z.any().optional(),
+  category: z.string().min(1, "Category cannot be empty"),
+  image: z.string().optional(),
 });
 
 export type RecipeFormValues = z.infer<typeof recipeSchema>;

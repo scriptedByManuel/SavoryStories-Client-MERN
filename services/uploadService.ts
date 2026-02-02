@@ -1,9 +1,9 @@
 import { apiClient } from "@/lib/axios"
 
 const uploadService = {
-    uploadImage: async (path: string, formData: FormData) => {
+    uploadImage: async (formData: FormData) => {
         try {
-            const response = await apiClient.post(path, formData)
+            const response = await apiClient.post('/upload', formData)
             return response.data
         } catch (error) {
             throw error

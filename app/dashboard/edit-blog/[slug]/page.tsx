@@ -4,12 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { 
-  ArrowLeft, 
-  FileText, 
-  ImagePlus, 
-  Loader2, 
-} from "lucide-react";
+import { ArrowLeft, FileText, ImagePlus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -25,8 +20,13 @@ import { Blog, BlogFormValues, blogSchema } from "@/types/blogType";
 import blogService from "@/services/blogService";
 import uploadService from "@/services/uploadService";
 import useEditSlug from "@/features/dashboard/hooks/useEditSlug";
+import CookingLoader from "@/components/CookingLoader";
 
-export default function EditBlogPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function EditBlogPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const router = useRouter();
   const { getBlogBySlug, updateBlog } = blogService;
   const { uploadImage } = uploadService;
@@ -67,9 +67,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
       });
 
       if (blog.featuredImage) {
-        setPreviewImage(
-          `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${blog.featuredImage}`
-        );
+        setPreviewImage(blog.featuredImage);
       }
     }
   }, [blog, reset]);
@@ -84,20 +82,24 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
     }
   };
 
-  const onSubmit = async (formData: BlogFormValues) => {
+  const onSubmit = async (data: BlogFormValues) => {
     try {
-      await updateBlog(blog._id, formData);
-
+      let currentImage = blog?.featuredImage;
       if (photoFile) {
         const imgFormData = new FormData();
         imgFormData.append("image", photoFile);
-        await uploadImage(`/blogs/${blog._id}/image`, imgFormData);
+        const imgResponse = await uploadImage(imgFormData);
+        currentImage = imgResponse.url;
       }
-
+      const payload = {
+        ...data,
+        featuredImage: currentImage,
+      };
+      await updateBlog(blog._id, payload);
       toast.success("Blog post updated successfully!");
       router.push("/dashboard");
     } catch (error: unknown) {
-      if(error instanceof Error) {
+      if (error instanceof Error) {
         toast.error(error.message || "Failed to update blog");
       }
     }
@@ -106,7 +108,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
   if (isLoading) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <CookingLoader />
       </div>
     );
   }
@@ -114,20 +116,36 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
   return (
     <div className="min-h-screen flex flex-col bg-muted/20">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
-        <Link href="/dashboard" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
         </Link>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Edit Blog Post</h1>
-              <p className="text-muted-foreground">Keep your stories updated and engaging.</p>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Edit Blog Post
+              </h1>
+              <p className="text-muted-foreground">
+                Keep your stories updated and engaging.
+              </p>
             </div>
             <div className="flex gap-3">
-              <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+              >
+                Cancel
+              </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save Changes
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}{" "}
+                Save Changes
               </Button>
             </div>
           </div>
@@ -144,40 +162,60 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
                   <div className="space-y-2">
                     <Label>Blog Title</Label>
                     <Input {...register("title")} placeholder="Blog Title" />
-                    {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
+                    {errors.title && (
+                      <p className="text-xs text-destructive">
+                        {errors.title.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label>Excerpt (Brief Summary)</Label>
-                    <Textarea 
-                      {...register("excerpt")} 
-                      className="h-24 resize-none" 
+                    <Textarea
+                      {...register("excerpt")}
+                      className="h-24 resize-none"
                       placeholder="Brief summary for preview cards..."
                     />
-                    {errors.excerpt && <p className="text-xs text-destructive">{errors.excerpt.message}</p>}
+                    {errors.excerpt && (
+                      <p className="text-xs text-destructive">
+                        {errors.excerpt.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label>Full Content</Label>
-                    <Textarea 
-                      {...register("content")} 
-                      rows={15} 
-                      placeholder="Write your story using markdown..." 
+                    <Textarea
+                      {...register("content")}
+                      rows={15}
+                      placeholder="Write your story using markdown..."
                     />
                     <p className="text-xs text-muted-foreground mt-2">
-                        Tip: Use ## for headings, - for bullets, and 1. for lists.
+                      Tip: Use ## for headings, - for bullets, and 1. for lists.
                     </p>
-                    {errors.content && <p className="text-xs text-destructive">{errors.content.message}</p>}
+                    {errors.content && (
+                      <p className="text-xs text-destructive">
+                        {errors.content.message}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
 
               {/* Writing Tips Sidebar/Bottom */}
               <Card className="bg-muted/50 border-none">
-                <CardHeader><CardTitle className="text-sm">Writing Reminder</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle className="text-sm">Writing Reminder</CardTitle>
+                </CardHeader>
                 <CardContent className="text-xs text-muted-foreground space-y-2">
-                    <p><strong>Authenticity:</strong> Stay true to your culinary voice.</p>
-                    <p><strong>Structure:</strong> Use headers to make the post readable.</p>
+                  <p>
+                    <strong>Authenticity:</strong> Stay true to your culinary
+                    voice.
+                  </p>
+                  <p>
+                    <strong>Structure:</strong> Use headers to make the post
+                    readable.
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -185,29 +223,48 @@ export default function EditBlogPage({ params }: { params: Promise<{ slug: strin
             {/* Sidebar */}
             <div className="space-y-6">
               <Card>
-                <CardHeader><CardTitle>Featured Image</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>Featured Image</CardTitle>
+                </CardHeader>
                 <CardContent>
                   <div className="relative aspect-video rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden bg-muted/30 group">
-                    <img 
-                      src={previewImage || "/placeholder.png"} 
-                      className="w-full h-full object-cover" 
+                    <img
+                      src={previewImage || "/placeholder.png"}
+                      className="w-full h-full object-cover"
                       alt="Blog Preview"
                     />
-                    <Label htmlFor="img-edit" className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity">
+                    <Label
+                      htmlFor="img-edit"
+                      className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity"
+                    >
                       <ImagePlus className="text-white h-8 w-8" />
                     </Label>
-                    <Input id="img-edit" type="file" className="hidden" onChange={handleImageChange} />
+                    <Input
+                      id="img-edit"
+                      type="file"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
                   </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader><CardTitle>Metadata</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>Metadata</CardTitle>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label>Category</Label>
-                    <Input {...register("category")} placeholder="e.g. Techniques, News" />
-                    {errors.category && <p className="text-xs text-destructive">{errors.category.message}</p>}
+                    <Input
+                      {...register("category")}
+                      placeholder="e.g. Techniques, News"
+                    />
+                    {errors.category && (
+                      <p className="text-xs text-destructive">
+                        {errors.category.message}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>

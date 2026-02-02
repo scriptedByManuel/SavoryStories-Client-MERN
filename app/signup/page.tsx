@@ -33,9 +33,9 @@ export default function SignupPage() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
-  const { chef, setChef, updateChef } = useProfileStore();
+  const { chef, setChef } = useProfileStore();
   const { signup, isLoading } = useSignup();
-  const { changeNameAndBio } = profileService;
+  const { updateProfile } = profileService;
   const { uploadImage } = uploadService;
 
   const [isMounted, setIsMounted] = useState(false);
@@ -65,32 +65,32 @@ export default function SignupPage() {
   const handleInitialSignup = async (data: SignupFormValues) => {
     const user = await signup(data);
     if (user) {
-      setChef(user);
       setStep(2);
     }
   };
 
   const handleProfileCompletion = async (data: SignupFormValues) => {
     try {
-      const payload = {
-        name: data.name,
-        bio: data.bio || "",
-      };
-
-      const profileResponse = await changeNameAndBio(payload);
-
       if (photoFile) {
         const formData = new FormData();
-        formData.append("avatar", photoFile);
-        const uploadResponse = await uploadImage("/profile/avatar", formData);
+        formData.append("image", photoFile);
+        const uploadResponse = await uploadImage(formData);
+        const url = uploadResponse.url;
 
-        updateChef(uploadResponse.data);
+        const payload = {
+          name: data.name,
+          bio: data.bio || "",
+          avatar: url,
+        };
+
+        const profileResponse = await updateProfile(payload);
+        setChef(profileResponse.data);
+
+        toast.success(`Welcome to Savory Stories, ${data.name}`);
+        router.push("/dashboard");
       } else {
-        updateChef(profileResponse.data);
+        toast.warning("Please upload a profile photo");
       }
-
-      toast.success(`Welcome to Savory Stories, ${data.name}`);
-      router.push("/dashboard");
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error("Profile completion failed");
@@ -210,7 +210,8 @@ export default function SignupPage() {
                 <div className="relative group">
                   <Avatar className="h-32 w-32 border-4 border-background shadow-2xl transition-transform group-hover:scale-105">
                     <AvatarImage
-                      src={photoPreview || ""}
+                      src={photoPreview || "/user-placeholder.jpeg"}
+                      alt={chef?.name || "Chef Avatar"}
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-primary/10 text-primary text-3xl font-black">

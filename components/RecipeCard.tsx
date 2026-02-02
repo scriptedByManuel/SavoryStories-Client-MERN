@@ -15,9 +15,8 @@ const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
     },
   };
 
-  const imageUrl = recipe.image
-    ? `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`
-    : "/placeholder.png";
+  const imageUrl = recipe.image || "/image-placeholder.jpeg";
+
 
   return (
     <motion.a

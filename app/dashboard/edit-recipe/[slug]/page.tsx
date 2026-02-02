@@ -84,11 +84,9 @@ export default function EditRecipePage({
         ingredients: recipe.ingredients,
         instructions: recipe.instructions,
         difficulty: recipe.difficulty,
-      })
+      });
       if (recipe.image) {
-        setPreviewImage(
-          `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}/${recipe.image}`,
-        );
+        setPreviewImage(recipe.image);
       }
     }
   }, [recipe, reset, setValue]);
@@ -122,16 +120,20 @@ export default function EditRecipePage({
     }
   };
 
-  const onSubmit = async (formData: RecipeFormValues) => {
+  const onSubmit = async (data: RecipeFormValues) => {
     try {
-      await updateRecipe(recipe._id, formData);
-
+      let currentImage = recipe?.image;
       if (photoFile) {
         const imgFormData = new FormData();
         imgFormData.append("image", photoFile);
-        await uploadImage(`/recipes/${recipe._id}/image`, imgFormData);
+        const imgResponse = await uploadImage(imgFormData);
+        currentImage = imgResponse.url;
       }
-
+      const payload = {
+        ...data,
+        image: currentImage,
+      };
+      await updateRecipe(recipe._id, payload);
       toast.success("Recipe updated successfully!");
       router.push("/dashboard");
     } catch (error: unknown) {
