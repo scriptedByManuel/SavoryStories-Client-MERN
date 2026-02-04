@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Input } from "@/components/ui/input";
 import { Search, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
@@ -14,9 +14,10 @@ import recipeService from "@/services/recipeService";
 import { useItemList } from "@/features/recipe-blog/hooks/useItemList";
 import { Recipe } from "@/types/recipeType";
 import PublicEmptyState from "@/features/recipe-blog/components/PublicEmptyState";
+import { SkeletonGrid } from "@/components/SkeletonCard";
 
-const  RecipesContent = () => {
-  const { getAllRecipes } = recipeService
+const RecipesContent = () => {
+  const { getAllRecipes } = recipeService;
   const {
     data,
     isLoading,
@@ -25,7 +26,7 @@ const  RecipesContent = () => {
     handleSort,
     sort,
     handleUrlChange,
-  } = useItemList('recipes', getAllRecipes);
+  } = useItemList("recipes", getAllRecipes);
   const recipes = data?.data || [];
   const meta = data?.meta;
   const links = data?.links;
@@ -70,7 +71,7 @@ const  RecipesContent = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-            ref={searchInput}
+              ref={searchInput}
               placeholder="Search recipes by title, author, or ingredients..."
               onChange={handleSearch}
               className="pl-10 pr-12"
@@ -108,7 +109,9 @@ const  RecipesContent = () => {
         </div>
 
         {isLoading ? (
-          null
+          <div className="container mx-auto px-4 mb-8">
+            <SkeletonGrid length={6} />
+          </div>
         ) : recipes.length === 0 ? (
           <PublicEmptyState />
         ) : (
@@ -125,13 +128,17 @@ const  RecipesContent = () => {
             </div>
 
             {meta && meta.last_page > 1 && (
-              <Pagination links={links}  meta={meta} handleUrlChange={handleUrlChange}/>
+              <Pagination
+                links={links}
+                meta={meta}
+                handleUrlChange={handleUrlChange}
+              />
             )}
           </motion.div>
         )}
       </main>
     </motion.div>
   );
-}
+};
 
 export default RecipesContent;
