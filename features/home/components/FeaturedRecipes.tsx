@@ -20,15 +20,15 @@ const FeaturedRecipes = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {isLoading ? (
-            <SkeletonGrid length={3} />
-          ) : (
-            recipes.map((recipe: Recipe) => (
+        {isLoading ? (
+          <SkeletonGrid length={3} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {recipes.map((recipe: Recipe) => (
               <RecipeCard key={recipe._id} recipe={recipe} />
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

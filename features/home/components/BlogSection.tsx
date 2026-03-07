@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { SkeletonGrid } from "@/components/SkeletonCard";
 
 const BlogSection = () => {
-  const { blogs, isLoading } = useFeaturedBlogs()
+  const { blogs, isLoading } = useFeaturedBlogs();
   const router = useRouter();
   return (
     <section className="py-16 md:py-24 bg-muted/30">
@@ -22,18 +22,22 @@ const BlogSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {isLoading ? (
-            <SkeletonGrid length={6} />
-          ) : (
-          blogs.map((blog: Blog) => (
-            <BlogCard key={blog._id} blog={blog} />
-          )))
-          }
-        </div>
+        {isLoading ? (
+          <SkeletonGrid length={6} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {blogs.map((blog: Blog) => (
+              <BlogCard key={blog._id} blog={blog} />
+            ))}
+          </div>
+        )}
 
         <div className="text-center">
-          <Button onClick={() => router.push("/blog")} size="lg" variant="outline">
+          <Button
+            onClick={() => router.push("/blog")}
+            size="lg"
+            variant="outline"
+          >
             View All Posts
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
