@@ -25,23 +25,25 @@ const BlogSection = () => {
         {isLoading ? (
           <SkeletonGrid length={6} />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {blogs.map((blog: Blog) => (
-              <BlogCard key={blog._id} blog={blog} />
-            ))}
-          </div>
-        )}
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {blogs.map((blog: Blog) => (
+                <BlogCard key={blog._id} blog={blog} />
+              ))}
+            </div>
 
-        <div className="text-center">
-          <Button
-            onClick={() => router.push("/blog")}
-            size="lg"
-            variant="outline"
-          >
-            View All Posts
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+            <div className="text-center">
+              <Button
+                onClick={() => router.push("/blog")}
+                size="lg"
+                variant="outline"
+              >
+                View All Posts
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
